@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TexasHoldem.Model;
 using TexasHoldem.Web.Hubs;
@@ -48,6 +49,7 @@ namespace TexasHoldem.Web
         private async Task CurrentGame_GameUpdated(Game game)
         {
             await _hubContext.Clients.All.UpdateGame(game);
+            Thread.Sleep(100);
         }
 
 

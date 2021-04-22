@@ -277,6 +277,27 @@ var app = new Vue({
             }
         },
         bet: function () {
+            var money = 0;
+            this.betChips.forEach(function (item, index) {
+                money += item.money;
+            });
+            if (this.self.role == 2) {
+                if (money != 5 && this.game.maxBet == 0) {
+                    alert("小盲的第一轮下注必须是5!");
+                    return;
+                }
+            }
+            if (this.self.role == 3) {
+                if (money != 25 && this.game.maxBet == 0) {
+                    alert("大盲的第一轮下注必须是25!");
+                    return;
+                }
+            }
+            if (money < this.game.maxBet) {
+                alert("你的下注不能少于之前玩家!");
+                return;
+            }
+
             connection.invoke('Bet', JSON.stringify(this.betChips));
         }
 

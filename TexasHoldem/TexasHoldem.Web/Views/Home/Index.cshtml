@@ -10,8 +10,8 @@
     }
 
     #selfImg {
-        width: 100px;
-        height: 100px;
+        width: 80px;
+        height: 80px;
         margin-right: 10px;
         border-radius: 10px;
     }
@@ -25,20 +25,27 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-direction:column;
+        flex-direction: column;
     }
 
-        .flex-center {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .flex-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        .desktop .riverpoker {
-            width: 55px;
-            height: 60px;
-            margin: 10px;
-        }
+
+    .flex-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    .desktop .riverpoker {
+        width: 55px;
+        height: 60px;
+        margin: 10px;
+    }
 
 
     .game {
@@ -77,8 +84,8 @@
     .gameheader {
         width: 60px;
         height: 60px;
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin-top: 5px;
+        margin-bottom: 5px;
         border-radius: 10px;
         background-color: #202020;
     }
@@ -94,6 +101,14 @@
         height: 30px;
         margin: 3px;
         border-radius: 15px;
+    }
+
+
+    .chip-little {
+        width: 10px;
+        height: 10px;
+        margin: 1px;
+        border-radius: 5px;
     }
 
     .chips {
@@ -171,6 +186,14 @@
     .active {
         border: solid 2px yellow;
     }
+
+    .playerbet {
+        border: solid 2px white;
+        background: #999999;
+        opacity: 0.7;
+        margin: 2px;
+        color: white;
+    }
 </style>
 
 <div class="text-center">
@@ -190,6 +213,23 @@
                 </div>
                 @*<img id="desktop" class="desktop" src="~/img/desktop2.png" />*@
                 <div id="desktop" class="desktop">
+                    <div class="flex-top">
+                        <div v-for="player in playerSeats">
+                            <div v-if="player && player.betMoney>0" class="playerbet flex-top">
+                                <div>
+                                    <span>{{player.name}}</span><br />
+                                    <span>{{player.betMoney}}</span><br />
+                                </div>
+                                <div>
+                                    <div v-for="betChip in player.betChips">
+                                        <div v-if="betChip.num>0">
+                                            <img class="chip-little" :src="'/img/chip'+betChip.money+'.png'" />x{{betChip.num}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="flex-center">
                         <div v-for="poker in riverpokers">
                             <img v-if="poker" class="riverpoker" :src="poker.img" />

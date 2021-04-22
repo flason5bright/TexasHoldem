@@ -122,17 +122,23 @@ namespace TexasHoldem.Web.Hubs
             // [{"money":5,"num":4}]
             foreach (var chip in betChips)
             {
-                var count = betChips.Count(it => it.money == chip.money);
                 var playerChip = Player.Chips.FirstOrDefault(it => it.Money == chip.money);
                 if (playerChip != null)
-                    playerChip.Num -= count;
+                    playerChip.Num -= 1;
+
+                var playerBetChip = Player.BetChips.FirstOrDefault(it => it.Money == chip.money);
+                if (playerBetChip != null)
+                    playerBetChip.Num += 1;
+
+
 
                 var poolChip = pool.FirstOrDefault(it => it.Money == chip.money);
                 if (poolChip != null)
-                    poolChip.Num += count;
+                    poolChip.Num += 1;
             }
-
-
+            Player.IsActive = false;
+            room.CurrentGame.MaxBet = Player.BetMoney;
+            room.CurrentGame.MoveToNext();
             await Clients.All.UpdatePlayer(Player);
             await Clients.All.UpdateGame(room.CurrentGame);
         }

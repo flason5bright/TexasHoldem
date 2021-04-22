@@ -23,7 +23,11 @@ namespace TexasHoldem.Web.Services
 
         public IList<Chip> PoolChips { get; set; }
 
+        public int MaxBet { get; set; }
+
         public int PoolMoney { get { return PoolChips.Sum(it => it.Money * it.Num); } }
+
+        private int _currentIndex = -1;
 
         public Game(int id, IEnumerable<Player> players)
         {
@@ -120,12 +124,19 @@ namespace TexasHoldem.Web.Services
         protected void StartFirstRound()
         {
             var firstIndex = this.Players.IndexOf(this.Players.FirstOrDefault(it => it.Role == GameRole.Small));
-            var currentIndex = firstIndex;
-            this.Players[currentIndex].IsActive = true;
-            PlayerUpdated?.Invoke(this.Players[currentIndex]);
+            _currentIndex = firstIndex;
+            this.Players[_currentIndex].IsActive = true;
+            PlayerUpdated?.Invoke(this.Players[_currentIndex]);
 
         }
 
+        public void MoveToNext()
+        {
+            _currentIndex++;
+            _currentIndex = _currentIndex % Players.Count();
+            this.Players[_currentIndex].IsActive = true;
+            PlayerUpdated?.Invoke(this.Players[_currentIndex]);
+        }
 
 
         protected void OpenThreeCards()

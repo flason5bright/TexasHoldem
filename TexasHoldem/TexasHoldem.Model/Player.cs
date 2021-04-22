@@ -10,7 +10,8 @@ namespace TexasHoldem.Model
         public int Index { get; set; } = -1;
         public string Name { get; set; }
         public string Avatar { get; set; }
-        public decimal Money { get { return Chips.Sum(it => it.Money * it.Num); } }
+        public int Money { get { return Chips.Sum(it => it.Money * it.Num); } }
+        public int BetMoney { get { return BetChips.Sum(it => it.Money * it.Num); } }
 
         public GameRole Role { get; set; }
         public GamePlayerStatus Status { get; set; }
@@ -23,6 +24,8 @@ namespace TexasHoldem.Model
 
 
         public IEnumerable<Chip> Chips { get; set; }
+
+        public IEnumerable<Chip> BetChips { get; set; }
 
         public PlayerStatus PlayerStatus { get; set; } = PlayerStatus.Audience;
 
@@ -38,6 +41,19 @@ namespace TexasHoldem.Model
                 new Chip(50,4),
                 new Chip(100,4),
                 new Chip(500,4),
+            };
+            SetBetChips();
+        }
+
+        private void SetBetChips()
+        {
+            BetChips = new List<Chip>()
+            {
+                new Chip(5,0),
+                new Chip(25,0),
+                new Chip(50,0),
+                new Chip(100,0),
+                new Chip(500,0),
             };
         }
 
