@@ -1,0 +1,330 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<style>
+    .img {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+        border-radius: 10px;
+    }
+
+    #selfImg {
+        width: 100px;
+        height: 100px;
+        margin-right: 10px;
+        border-radius: 10px;
+    }
+
+    .desktop {
+        width: 100%;
+        height: 400px;
+        background-image: url(/img/desktop4.png);
+        background-size: 100% 100%;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction:column;
+    }
+
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .desktop .riverpoker {
+            width: 55px;
+            height: 60px;
+            margin: 10px;
+        }
+
+
+    .game {
+        display: -webkit-flex; /* Safari */
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: stretch;
+        background-color: #202020;
+    }
+
+    .hearderRow1 {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        background-color: #202020;
+        border: solid 0px white;
+    }
+
+    .hearderRow2 {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-around;
+        background-color: #202020;
+        border: solid 0px white;
+    }
+
+    .headercolumn {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        background-color: #202020;
+        border: solid 0px white;
+    }
+
+    .gameheader {
+        width: 60px;
+        height: 60px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        background-color: #202020;
+    }
+
+    #selfPanel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chip {
+        width: 30px;
+        height: 30px;
+        margin: 3px;
+        border-radius: 15px;
+    }
+
+    .chips {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: flex-start;
+        max-width: 150px;
+        margin-right: 10px;
+    }
+
+        .chips div input[type='checkbox'] {
+            opacity: 0;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            top: 0;
+            right: 0;
+            height: 10px;
+            width: 10px;
+        }
+
+        .chips div label:hover img {
+            -webkit-transform: scale(1.05);
+            -moz-transform: scale(1.05);
+            -ms-transform: scale(1.05);
+            -o-transform: scale(1.05);
+            transform: scale(1.05);
+            border: 4px solid #1E9FFF;
+        }
+
+        .chips div input[type='checkbox']:checked ~ label img {
+            border: 4px solid #1E9FFF;
+        }
+
+    .allchips {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .riches {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+    }
+
+    .gamer {
+        width: 120px;
+        margin: 5px;
+    }
+
+        .gamer .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            width: 100%;
+            border: solid 0px white;
+        }
+
+    .selfpoker {
+        width: 25px;
+        height: 30px;
+        margin: 2px;
+        display: inline-block;
+    }
+
+    .active {
+        border: solid 2px yellow;
+    }
+</style>
+
+<div class="text-center">
+    @*<h1 class="display-4">Welcome</h1>*@
+
+    <div id="app" class="container">
+
+        <div>
+            <div class="hearderRow1">
+                <gamer :seat="playerSeats[0]" :self="self" :player-status="self.playerStatus" :index="0"></gamer>
+                <gamer :seat="playerSeats[8]" :self="self" :player-status="self.playerStatus" :index="8"></gamer>
+            </div>
+            <div class="game">
+                <div class="headercolumn">
+                    <gamer :seat="playerSeats[1]" :self="self" :player-status="self.playerStatus" :index="1"></gamer>
+                    <gamer :seat="playerSeats[2]" :self="self" :player-status="self.playerStatus" :index="2"></gamer>
+                </div>
+                @*<img id="desktop" class="desktop" src="~/img/desktop2.png" />*@
+                <div id="desktop" class="desktop">
+                    <div class="flex-center">
+                        <div v-for="poker in riverpokers">
+                            <img v-if="poker" class="riverpoker" :src="poker.img" />
+                        </div>
+                    </div>
+                    <div>
+                        <game-pool v-if="game" :game="game"></game-pool>
+                    </div>
+                </div>
+                <div class="headercolumn">
+                    <gamer :seat="playerSeats[6]" :self="self" :player-status="self.playerStatus" :index="6"></gamer>
+                    <gamer :seat="playerSeats[7]" :self="self" :player-status="self.playerStatus" :index="7"></gamer>
+                </div>
+            </div>
+            <div class="hearderRow2">
+                <gamer :seat="playerSeats[3]" :self="self" :player-status="self.playerStatus" :index="3"></gamer>
+                <gamer :seat="playerSeats[4]" :self="self" :player-status="self.playerStatus" :index="4"></gamer>
+                <gamer :seat="playerSeats[5]" :self="self" :player-status="self.playerStatus" :index="5"></gamer>
+            </div>
+        </div>
+        <h2 ref="selfName" hidden>@ViewBag.Player.Name</h2>
+        <h2 ref="selfName" hidden>@ViewBag.Player.Name</h2>
+        <div>
+            <marquee><h2 style="color:red">{{notification}}</h2></marquee>
+        </div>
+
+        <div>
+            <div class="m-auto">
+                <div id="selfPanel">
+
+                    <img id="selfImg" :src="self.avatar" />
+                    <div>
+                        <label><b>{{self.name}}</b></label> <br />
+                        <label>{{self.money}}</label><br />
+                        <label>{{roles[self.role]}}</label>
+                    </div>
+                    <div class="allchips">
+                        <div v-for="(chip, index) in self.chips">
+                            <chip-panel v-bind:chip="chip" v-on:chip-toggle="chipToggle"></chip-panel>
+                        </div>
+                    </div>
+                    <div>
+                        <input type="button" id="btnBet" v-if="self.isActive" v-on:click="bet" value="下注" class="btn btn-success btn-block" />
+                        <input type="button" id="btnCall" v-if="self.isActive" v-on:click="bet" value="跟注" class="btn btn-success btn-block" />
+                        <input type="button" id="btnAllIn" v-if="self.isActive" v-on:click="bet" value="All In" class="btn btn-success btn-block" />
+                    </div>
+                </div>
+            </div>
+            <div>
+                <input type="button" id="btnStart" v-if="self.name=='Tony'" v-on:click="startGame" value="Start" class="btn btn-success btn-block" />
+            </div>
+
+        </div>
+        <div>
+            <label>玩家列表</label>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>玩家</th>
+                        <th>资产</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr v-for="(player, index) in players">
+                        <td>{{index + 1}}</td>
+                        <td style="text-align:left"><img class="img" v-bind:src="player.avatar" /><span>{{player.name}}</span></td>
+                        <td style="text-align:center">
+                            <riches :player="player"></riches>
+                        </td>
+                        <td>{{playerstatus[player.playerStatus]}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<template id="riches">
+    <div class="riches">
+        <label>{{player.money}}:</label>
+        <div v-for="(chip, index) in player.chips">
+            <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
+        </div>
+    </div>
+</template>
+<template id="gamePool">
+    <div class="riches" style="color:white">
+        <label>{{game.poolMoney}}:</label>
+        <div v-for="(chip, index) in game.poolChips">
+            <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
+        </div>
+    </div>
+</template>
+
+<template id="chips">
+    <div class="chips">
+        <div v-for='(item,index) in chip.num'>
+            <input :id="chip.money + index" type="checkbox" v-on:click="chipToggle" :value="chip" />
+            <label :for="chip.money + index">
+                <img class="chip" :src="'/img/chip'+chip.money+'.png'" />
+            </label>
+        </div>
+    </div>
+</template>
+
+<template id="gamer">
+    <div class="gamer">
+        <div v-if="seat" :class="{ active: seat.isActive }">
+            <div class="header">
+                <img class="gameheader" :src="seat.avatar" />
+                <div style="margin:5px; float:left">
+                    <span><b>{{seat.name}}</b></span> <br />
+                    <span>{{seat.money}}</span><br />
+                    <span>{{roles[seat.role]}}</span>
+                </div>
+            </div>
+            <div class="header">
+                <div style="margin:2px; display:flex" v-if="seat.poker1">
+                    <img class="selfpoker" :src="getFirstImg()" />
+                    <img class="selfpoker" :src="getSecondImg()" />
+                </div>
+            </div>
+        </div>
+        <div v-else class="header">
+            <img class="gameheader" :src="addplayersrc" v-on:click="selectSeat(index)" />
+        </div>
+    </div>
+</template>
+
+
+<script type="text/javascript" src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+

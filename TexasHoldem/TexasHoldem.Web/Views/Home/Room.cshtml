@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewData["Title"] = "Room";
+}
+
+<h1>Room</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>房间名</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var room in ViewData["Rooms"] as IList<Room>)
+        {
+            <tr>
+                <td>@room.Name</td>
+                <td><a href="/Home/Index?id=@room.Id" class='btn btn-success btn-sm'>Join</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

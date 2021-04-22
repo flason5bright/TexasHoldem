@@ -1,0 +1,9 @@
+F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\bin\Debug\netcoreapp3.1\TexasHoldem.Model.deps.json
+F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\bin\Debug\netcoreapp3.1\TexasHoldem.Model.dll
+F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\bin\Debug\netcoreapp3.1\TexasHoldem.Model.pdb
+F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.csproj.CoreCompileInputs.cache
+F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.AssemblyInfoInputs.cache
+F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.AssemblyInfo.cs
+F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.dll
+F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.pdb
+F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.csprojAssemblyReference.cache

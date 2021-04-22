@@ -1,0 +1,123 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    img {
+        width: 80px;
+        height: 80px;
+        float: left;
+        border-radius: 5px;
+    }
+    .avatar {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .avatar div {
+        float: left;
+        position: relative;
+        margin-right: 5px;
+        list-style: none;
+    }
+
+        .avatar div input[type='radio'] {
+            opacity: 0;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+            .avatar div input[type='radio']:hover ~ label img {
+                -webkit-transform: scale(1.05);
+                -moz-transform: scale(1.05);
+                -ms-transform: scale(1.05);
+                -o-transform: scale(1.05);
+                transform: scale(1.05);
+                border: 4px solid #1E9FFF;
+            }
+
+            .avatar div input[type='radio']:checked ~ label img {
+                border: 4px solid #1E9FFF;
+            }
+</style>
+
+<h1>Login</h1>
+
+
+<div>
+    <form role="form" asp-controller="Home" asp-action="Login" asp-route-returnUrl="@ViewData["returnUrl"]" method="post">
+        <div class="form-group">
+            <label for="name">名称</label>
+            <input type="text" class="form-control" name="name" placeholder="请输入名称1" value="">
+        </div>
+        <div>
+            <label for="avatar">头像</label>
+            <div class="avatar">
+                <div>
+                    <input id="avatar1" name="avatar" type="radio" value="/img/avatar1.jpeg" />
+                    <label for="avatar1">
+                        <img src="~/img/avatar1.jpeg" />
+                    </label>
+                </div>
+                <div>
+                    <input id="avatar2" name="avatar" type="radio" value="/img/avatar2.jpeg" />
+                    <label for="avatar2">
+                        <img src="~/img/avatar2.jpeg" />
+                    </label>
+                </div>
+                <div>
+                    <input id="avatar3" name="avatar" type="radio" value="/img/avatar3.jpeg" />
+                    <label for="avatar3">
+                        <img src="~/img/avatar3.jpeg" />
+                    </label>
+                </div>
+                <div>
+                    <input id="avatar4" name="avatar" type="radio" value="/img/avatar4.jpeg" />
+                    <label for="avatar4">
+                        <img src="~/img/avatar4.jpeg" />
+                    </label>
+                </div>
+                <div>
+                    <input id="avatar5" name="avatar" type="radio" value="/img/avatar5.jpeg" />
+                    <label for="avatar5">
+                        <img src="~/img/avatar5.jpeg" />
+                    </label>
+                </div>
+                <div>
+                    <input id="avatar6" name="avatar" type="radio" value="/img/avatar6.jpeg" />
+                    <label for="avatar6">
+                        <img src="~/img/avatar6.jpeg" />
+                    </label>
+                </div>
+                <div>
+                    <input id="avatar7" name="avatar" type="radio" value="/img/avatar7.jpeg" />
+                    <label for="avatar7">
+                        <img src="~/img/avatar7.jpeg" />
+                    </label>
+                </div>
+                <div>
+                    <input id="avatar8" name="avatar" type="radio" value="/img/avatar8.jpeg" />
+                    <label for="avatar8">
+                        <img src="~/img/avatar8.jpeg" />
+                    </label>
+                </div>
+                <div>
+                    <input id="avatar9" name="avatar" type="radio" value="/img/avatar9.jpeg" />
+                    <label for="avatar9">
+                        <img src="~/img/avatar9.jpeg" />
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-success">登录</button>
+        </div>
+    </form>
+</div>
