@@ -2,6 +2,7 @@
 {
     public enum PokerSize
     {
+        Default = 0,
         Ace = 1,
         Two,
         Three,

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using TexasHoldem.Model;
 using TexasHoldem.Web.Services;
@@ -22,7 +23,7 @@ namespace TexasHoldem.Web.Hubs
 
         Task StartGame();
 
-        Task Bet(string chips);
+        Task Bet(string betChips, string chips);
 
     }
 
@@ -114,32 +115,43 @@ namespace TexasHoldem.Web.Hubs
             await Clients.All.UpdateGame(game);
         }
 
-        public async Task Bet(string chips)
+        public async Task Bet(string betChips, string chips)
         {
-            var betChips = JsonConvert.DeserializeAnonymousType(chips, new[] { new { money = -1, num = -1 } }.ToList());
+            var bet = JsonConvert.DeserializeAnonymousType(betChips, new[] { new { money = -1, num = -1 } }.ToList());
+            var rich = JsonConvert.DeserializeAnonymousType(chips, new[] { new { money = -1, num = -1 } }.ToList());
+
+
             var room = _roomService.Rooms.First();
             var pool = room.CurrentGame.PoolChips;
             // [{"money":5,"num":4}]
-            foreach (var chip in betChips)
+            foreach (var chip in bet)
             {
-                var playerChip = Player.Chips.FirstOrDefault(it => it.Money == chip.money);
-                if (playerChip != null)
-                    playerChip.Num -= 1;
 
                 var playerBetChip = Player.BetChips.FirstOrDefault(it => it.Money == chip.money);
                 if (playerBetChip != null)
-                    playerBetChip.Num += 1;
+                    playerBetChip.Num = chip.num;
 
 
 
                 var poolChip = pool.FirstOrDefault(it => it.Money == chip.money);
                 if (poolChip != null)
-                    poolChip.Num += 1;
+                    poolChip.Num += chip.num;
+            }
+
+            foreach (var chip in rich)
+            {
+                var playerChip = Player.Chips.FirstOrDefault(it => it.Money == chip.money);
+                if (playerChip != null)
+                    playerChip.Num = chip.num;
             }
             Player.IsActive = false;
-            room.CurrentGame.MaxBet = Player.BetMoney;
-            room.CurrentGame.MoveToNext();
+            if (Player.BetMoney > 0)
+                room.CurrentGame.MaxBet = Player.BetMoney;
+            else
+                room.CurrentGame.MaxBet = Player.BetMoney + 1;
+            room.CurrentGame.SetPoolChips();
             await Clients.All.UpdatePlayer(Player);
+            Thread.Sleep(500);
             await Clients.All.UpdateGame(room.CurrentGame);
         }
     }

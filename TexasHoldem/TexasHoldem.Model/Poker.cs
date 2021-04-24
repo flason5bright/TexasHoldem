@@ -12,7 +12,7 @@ namespace TexasHoldem.Model
         public Suit Suit { get; set; }
         public string Img { get; }
 
-        public Poker(int id, PokerSize size, Suit suit)
+        public Poker(int id, PokerSize size = PokerSize.Default, Suit suit = Suit.Default)
         {
             Id = id;
             PorkerSize = size;

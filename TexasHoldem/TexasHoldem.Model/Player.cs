@@ -21,8 +21,6 @@ namespace TexasHoldem.Model
 
         public bool IsActive { get; set; } = false;
 
-
-
         public IEnumerable<Chip> Chips { get; set; }
 
         public IEnumerable<Chip> BetChips { get; set; }
@@ -45,7 +43,7 @@ namespace TexasHoldem.Model
             SetBetChips();
         }
 
-        private void SetBetChips()
+        public void SetBetChips()
         {
             BetChips = new List<Chip>()
             {

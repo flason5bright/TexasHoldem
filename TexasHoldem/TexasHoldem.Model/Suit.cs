@@ -5,6 +5,7 @@
         Spade,
         Heart,
         Diamond,
-        Club
+        Club,
+        Default
     }
 }

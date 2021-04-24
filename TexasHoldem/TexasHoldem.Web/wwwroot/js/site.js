@@ -49,6 +49,35 @@ connection.start()
 
 
 
+//Vue.component('chip-panel', {
+//    data: function () {
+//        return {
+//            betChips: []
+//        }
+//    },
+//    props: {
+//        chip: Object
+//    },
+//    computed: {
+//        count: function () {
+//            console.log(this.betChips);
+//            return this.betChips.length;
+//        }
+//    },
+//    methods: {
+//        chipToggle: function () {
+//            if (event.target.checked) {
+//                this.$emit('chip-toggle', { 'chip': this.chip, 'isAdd': true })
+//            }
+//            else {
+//                this.$emit('chip-toggle', { 'chip': this.chip, 'isAdd': false })
+
+//            }
+//        }
+//    },
+//    template: '#chips'
+//})
+
 Vue.component('chip-panel', {
     data: function () {
         return {
@@ -56,7 +85,7 @@ Vue.component('chip-panel', {
         }
     },
     props: {
-        chip: Object
+        player: Object
     },
     computed: {
         count: function () {
@@ -182,6 +211,24 @@ var app = new Vue({
             if (that.game.riverPokers)
                 return that.game.riverPokers;
             return [];
+        },
+        betmoney: function () {
+            var money = 0;
+            if (this.self.betChips) {
+                this.self.betChips.forEach(function (item, index) {
+                    money += item.money * item.num;
+                });
+            }
+            return money;
+        },
+        money: function () {
+            var money = 0;
+            if (this.self.chips) {
+                this.self.chips.forEach(function (item, index) {
+                    money += item.money * item.num;
+                });
+            }
+            return money;
         }
 
     },
@@ -276,10 +323,57 @@ var app = new Vue({
                 this.betChips.splice(index, 1);
             }
         },
+        addBet: function (chip) {
+            if (chip.num == 0) {
+                alert("该筹码已经用完!");
+                return;
+            }
+
+            let that = this;
+
+            var index = that.self.chips.findIndex(function (item) {
+                return item.money == chip.money;
+            });
+            chip.num--;
+            that.self.chips.splice(index, 1, chip);
+
+            var chipIndex = -1;
+            var betChip = that.self.betChips.find(function (item, index) {
+                if (item.money == chip.money)
+                    chipIndex = index;
+                return item.money == chip.money;
+            });
+            betChip.num++;
+            that.self.betChips.splice(chipIndex, 1, betChip);
+        },
+        removeBet: function (betChip) {
+
+            if (betChip.num == 0) {
+                alert("该筹码已经退完!");
+                return;
+            }
+
+            let that = this;
+
+            var betIndex = that.self.betChips.findIndex(function (item) {
+                return item.money == betChip.money;
+            });
+            betChip.num--;
+            that.self.betChips.splice(betIndex, 1, betChip);
+
+            var chipIndex = -1;
+            var chip = that.self.chips.find(function (item, index) {
+                if (item.money == betChip.money)
+                    chipIndex = index;
+                return item.money == betChip.money;
+            });
+            chip.num++;
+            that.self.chips.splice(chipIndex, 1, chip);
+        },
         bet: function () {
             var money = 0;
-            this.betChips.forEach(function (item, index) {
-                money += item.money;
+            this.self.betChips.forEach(function (item, index) {
+                money += item.money * item.num;
             });
             if (this.self.role == 2) {
                 if (money != 5 && this.game.maxBet == 0) {
@@ -298,7 +392,7 @@ var app = new Vue({
                 return;
             }
 
-            connection.invoke('Bet', JSON.stringify(this.betChips));
+            connection.invoke('Bet', JSON.stringify(this.self.betChips), JSON.stringify(this.self.chips));
         }
 
     }

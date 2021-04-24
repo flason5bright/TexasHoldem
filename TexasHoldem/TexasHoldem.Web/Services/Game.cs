@@ -11,6 +11,14 @@ namespace TexasHoldem.Web.Services
     public delegate Task PlayerUpatedHandler(Player player);
     public delegate Task RiverPokerDealingHandler(Poker poker);
     public delegate Task DealPokerHandler(Player player);
+
+    public enum Round
+    {
+        First = 1,
+        Second,
+        Third,
+        Final
+    }
     public class Game
     {
         public int Id { get; private set; }
@@ -28,12 +36,17 @@ namespace TexasHoldem.Web.Services
         public int PoolMoney { get { return PoolChips.Sum(it => it.Money * it.Num); } }
 
         private int _currentIndex = -1;
+        private Round _currentRound = Round.First;
+        private IList<Poker> _openRiverPokers;
+        private Poker _backPoker = new Poker(54);
+        private int _smallIndex = -1;
 
         public Game(int id, IEnumerable<Player> players)
         {
             this.Id = id;
             foreach (var player in players)
             {
+                player.SetBetChips();
                 Players.Add(player);
             }
             foreach (var player in Players)
@@ -50,6 +63,11 @@ namespace TexasHoldem.Web.Services
             Players[smallIndex].Role = GameRole.Small;
             Players[bigIndex].Role = GameRole.Big;
 
+            InitPoolChips();
+        }
+
+        private void InitPoolChips()
+        {
             PoolChips = new List<Chip>()
             {
                 new Chip(5,0),
@@ -103,6 +121,7 @@ namespace TexasHoldem.Web.Services
         public async Task DealCards()
         {
             RiverPokers = new List<Poker>();
+            _openRiverPokers = new List<Poker>();
             int index = 0;
             foreach (var player in Players)
             {
@@ -114,17 +133,18 @@ namespace TexasHoldem.Web.Services
 
             for (int i = 0; i < 5; i++)
             {
-                RiverPokers.Add(AllPokers[index++]);
+                RiverPokers.Add(_backPoker);
+                _openRiverPokers.Add(AllPokers[index++]);
                 Thread.Sleep(500);
                 await GameUpdated?.Invoke(this);
             }
-            StartFirstRound();
+            Start();
         }
 
-        protected void StartFirstRound()
+        protected void Start()
         {
-            var firstIndex = this.Players.IndexOf(this.Players.FirstOrDefault(it => it.Role == GameRole.Small));
-            _currentIndex = firstIndex;
+            _smallIndex = this.Players.IndexOf(this.Players.FirstOrDefault(it => it.Role == GameRole.Small));
+            _currentIndex = _smallIndex;
             this.Players[_currentIndex].IsActive = true;
             PlayerUpdated?.Invoke(this.Players[_currentIndex]);
 
@@ -138,10 +158,102 @@ namespace TexasHoldem.Web.Services
             PlayerUpdated?.Invoke(this.Players[_currentIndex]);
         }
 
+        public void SetPoolChips()
+        {
+            InitPoolChips();
+            foreach (var player in Players)
+            {
+                foreach (var bet in player.BetChips)
+                {
+                    var poolChip = PoolChips.FirstOrDefault(it => it.Money == bet.Money);
+                    if (poolChip != null)
+                        poolChip.Num += bet.Num;
+                }
+            }
+
+            if (CanGoNextRound())
+            {
+                GoToNextRound();
+                _currentIndex = GetFirstIndex(_smallIndex);
+                this.Players[_currentIndex].IsActive = true;
+                PlayerUpdated?.Invoke(this.Players[_currentIndex]);
+            }
+            else
+            {
+                MoveToNext();
+            }
+        }
+
+        private int GetFirstIndex(int index)
+        {
+            if (this.Players[index].Status != GamePlayerStatus.Fold)
+                return index;
+            index++;
+            index = index % Players.Count();
+            return GetFirstIndex(index);
+        }
+
+        private void GoToNextRound()
+        {
+            if (_currentRound == Round.First)
+            {
+                OpenThreeCards();
+            }
+            else if (_currentRound == Round.Second)
+            {
+                OpenFourthCards();
+            }
+            else if (_currentRound == Round.Third)
+            {
+                OpenFifthCards();
+            }
+            else
+            {
+                FinalCompute();
+            }
+
+            _currentRound = (Round)(_currentRound + 1);
+
+        }
+
+        private void FinalCompute()
+        {
+
+        }
+
+        private bool CanGoNextRound()
+        {
+            var currentPlayers = Players.Where(it => it.Status == GamePlayerStatus.Play);
+            foreach (var player in currentPlayers)
+            {
+                if (player.Money > 0)
+                {
+                    if (player.BetMoney < this.MaxBet)
+                    {
+                        return false;
+                    }
+                    continue;
+                }
+            }
+            return true;
+        }
+
 
         protected void OpenThreeCards()
         {
-            //开前三张牌
+            RiverPokers[0] = _openRiverPokers[0];
+            RiverPokers[1] = _openRiverPokers[1];
+            RiverPokers[2] = _openRiverPokers[2];
+        }
+
+        protected void OpenFourthCards()
+        {
+            RiverPokers[3] = _openRiverPokers[3];
+        }
+
+        protected void OpenFifthCards()
+        {
+            RiverPokers[4] = _openRiverPokers[4];
         }
 
     }

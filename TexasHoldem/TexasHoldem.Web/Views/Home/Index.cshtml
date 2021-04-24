@@ -146,10 +146,6 @@
         }
 
     .allchips {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: space-around;
         width: 100%;
     }
 
@@ -177,10 +173,17 @@
         }
 
     .selfpoker {
+        width: 75px;
+        height: 80px;
+        margin: 2px;
+        display: inline-block;
+    }
+
+
+    .gamerpoker {
         width: 25px;
         height: 30px;
         margin: 2px;
-        display: inline-block;
     }
 
     .active {
@@ -266,15 +269,32 @@
                         <label>{{self.money}}</label><br />
                         <label>{{roles[self.role]}}</label>
                     </div>
+                    <div>
+                        <div style="margin:2px; display:flex" v-if="self.poker1">
+                            <img class="selfpoker" :src="self.poker1.img" />
+                            <img class="selfpoker" :src="self.poker2.img" />
+                        </div>
+                    </div>
                     <div class="allchips">
-                        <div v-for="(chip, index) in self.chips">
-                            <chip-panel v-bind:chip="chip" v-on:chip-toggle="chipToggle"></chip-panel>
+                        <div class="riches" v-if="self.isActive">
+                            <label>押注 </label><label style="width:80px">{{betmoney}}</label><label>:</label>
+                            <div v-for="(chip, index) in self.betChips" style="margin-right:5px">
+                                <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
+                                <input type="button" v-on:click="removeBet(chip)" value="减" />
+                            </div>
+                        </div>
+                        <div class="riches">
+                            <label>资产 </label><label style="width:80px">{{money}}</label> <label>:</label>
+                            <div v-for="(chip, index) in self.chips" style="margin-right:5px">
+                                <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
+                                <input type="button" v-on:click="addBet(chip)" value="加" v-if="self.isActive" />
+                            </div>
                         </div>
                     </div>
                     <div>
                         <input type="button" id="btnBet" v-if="self.isActive" v-on:click="bet" value="下注" class="btn btn-success btn-block" />
-                        <input type="button" id="btnCall" v-if="self.isActive" v-on:click="bet" value="跟注" class="btn btn-success btn-block" />
-                        <input type="button" id="btnAllIn" v-if="self.isActive" v-on:click="bet" value="All In" class="btn btn-success btn-block" />
+                        <input type="button" id="btnCall" v-if="self.isActive" v-on:click="bet" value="弃牌" class="btn btn-success btn-block" />
+
                     </div>
                 </div>
             </div>
@@ -329,15 +349,24 @@
 </template>
 
 <template id="chips">
-    <div class="chips">
-        <div v-for='(item,index) in chip.num'>
-            <input :id="chip.money + index" type="checkbox" v-on:click="chipToggle" :value="chip" />
-            <label :for="chip.money + index">
-                <img class="chip" :src="'/img/chip'+chip.money+'.png'" />
-            </label>
+    <div class="riches">
+        <div v-for="(chip, index) in player.chips">
+            <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
+            <input type="button" v-on:click="" value="加" />
         </div>
     </div>
 </template>
+
+@*<template id="chips">
+        <div class="chips">
+            <div v-for='(item,index) in chip.num'>
+                <input :id="chip.money + index" type="checkbox" v-on:click="chipToggle" :value="chip" />
+                <label :for="chip.money + index">
+                    <img class="chip" :src="'/img/chip'+chip.money+'.png'" />
+                </label>
+            </div>
+        </div>
+    </template>*@
 
 <template id="gamer">
     <div class="gamer">
@@ -352,8 +381,8 @@
             </div>
             <div class="header">
                 <div style="margin:2px; display:flex" v-if="seat.poker1">
-                    <img class="selfpoker" :src="getFirstImg()" />
-                    <img class="selfpoker" :src="getSecondImg()" />
+                    <img class="gamerpoker" :src="getFirstImg()" />
+                    <img class="gamerpoker" :src="getSecondImg()" />
                 </div>
             </div>
         </div>
