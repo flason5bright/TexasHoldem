@@ -25,7 +25,7 @@ namespace TexasHoldem.Web.Services
         public IList<Poker> RiverPokers { get; set; }
         public IList<Player> Players { get; private set; } = new List<Player>();
 
-        public IList<Poker> AllPokers { get; private set; }
+        public IList<Poker> AllPokers { get { return PokerService.Instance.AllPokers; } }
 
         public GameStatus GameStatus { get; set; }
 
@@ -34,6 +34,8 @@ namespace TexasHoldem.Web.Services
         public int MaxBet { get; set; }
 
         public int PoolMoney { get { return PoolChips.Sum(it => it.Money * it.Num); } }
+
+        public bool IsFinished { get; set; } = false;
 
         private int _currentIndex = -1;
         private Round _currentRound = Round.First;
@@ -87,25 +89,14 @@ namespace TexasHoldem.Web.Services
         }
         public event GameUpatedHandler GameUpdated;
         public event PlayerUpatedHandler PlayerUpdated;
+        public event PlayerUpatedHandler PlayersUpdated;
 
         public event GameUpatedHandler GameStarted;
         public event GameUpatedHandler Shuffling;
         public event GameUpatedHandler Shuffled;
         public event DealPokerHandler Dealing;
-        public event RiverPokerDealingHandler RiverPokerDealing;
 
-        private void InitailizePokers()
-        {
-            AllPokers = new List<Poker>();
-            int index = 0;
-            foreach (Suit suit in Enum.GetValues(typeof(Suit)))
-            {
-                foreach (PokerSize size in Enum.GetValues(typeof(PokerSize)))
-                {
-                    AllPokers.Add(new Poker(index++, size, suit));
-                }
-            }
-        }
+
 
 
 
@@ -114,7 +105,7 @@ namespace TexasHoldem.Web.Services
             this.GameStatus = GameStatus.Shuffling;
             await Shuffling?.Invoke(this);
             Thread.Sleep(500);
-            InitailizePokers();
+            PokerService.Instance.Shuffle();
             await Shuffled?.Invoke(this);
         }
 
@@ -154,8 +145,27 @@ namespace TexasHoldem.Web.Services
         {
             _currentIndex++;
             _currentIndex = _currentIndex % Players.Count();
-            this.Players[_currentIndex].IsActive = true;
-            PlayerUpdated?.Invoke(this.Players[_currentIndex]);
+            if (this.Players[_currentIndex].Status == GamePlayerStatus.Fold)
+                MoveToNext();
+            else
+            {
+                this.Players[_currentIndex].IsActive = true;
+                PlayerUpdated?.Invoke(this.Players[_currentIndex]);
+            }
+           
+        }
+
+        public void IsAllCheck()
+        {
+            var currentPlayers = Players.Where(it => it.Status == GamePlayerStatus.Play);
+            if (!currentPlayers.Any(it => it.IsCheck == false))
+            {
+                GoToNextRound();
+            }
+            else
+            {
+                MoveToNext();
+            }
         }
 
         public void SetPoolChips()
@@ -170,13 +180,14 @@ namespace TexasHoldem.Web.Services
                         poolChip.Num += bet.Num;
                 }
             }
+            Next();
 
+        }
+        public void Next()
+        {
             if (CanGoNextRound())
             {
                 GoToNextRound();
-                _currentIndex = GetFirstIndex(_smallIndex);
-                this.Players[_currentIndex].IsActive = true;
-                PlayerUpdated?.Invoke(this.Players[_currentIndex]);
             }
             else
             {
@@ -214,11 +225,20 @@ namespace TexasHoldem.Web.Services
 
             _currentRound = (Round)(_currentRound + 1);
 
+            foreach (var item in Players)
+            {
+                item.IsCheck = false;
+            }
+
+            _currentIndex = GetFirstIndex(_smallIndex);
+            this.Players[_currentIndex].IsActive = true;
+            PlayersUpdated?.Invoke(this.Players[_currentIndex]);
+
         }
 
         private void FinalCompute()
         {
-
+            this.IsFinished = true;
         }
 
         private bool CanGoNextRound()

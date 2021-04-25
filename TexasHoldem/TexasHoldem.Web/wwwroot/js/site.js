@@ -144,7 +144,8 @@ Vue.component('gamer', {
         seat: Object,
         index: Number,
         playerStatus: Number,
-        self: Object
+        self: Object,
+        game: Object
     },
     watch: {
         playerStatus: function () {
@@ -167,11 +168,17 @@ Vue.component('gamer', {
             });
         },
         getFirstImg: function () {
+            if (this.game.isFinished)
+                return this.seat.poker1.img;
+
             if (this.self.name == this.seat.name)
                 return this.seat.poker1.img;
             return this.seat.poker1.backImg;
         },
         getSecondImg: function () {
+            if (this.game.isFinished)
+                return this.seat.poker2.img;
+
             if (this.self.name == this.seat.name)
                 return this.seat.poker2.img;
             return this.seat.poker2.backImg;
@@ -192,7 +199,8 @@ var app = new Vue({
         roles: ["N/A", '庄', "小盲", "大盲"],
         game: {},
         notification: "请选择座位!",
-        betChips: []
+        betChips: [],
+        preBet:0
     },
     computed: {
         playerSeats: function () {
@@ -375,6 +383,7 @@ var app = new Vue({
             this.self.betChips.forEach(function (item, index) {
                 money += item.money * item.num;
             });
+
             if (this.self.role == 2) {
                 if (money != 5 && this.game.maxBet == 0) {
                     alert("小盲的第一轮下注必须是5!");
@@ -392,7 +401,53 @@ var app = new Vue({
                 return;
             }
 
+            if (money == this.preBet) {
+                connection.invoke('Check');
+            }
+
+            this.preBet = money;
+
             connection.invoke('Bet', JSON.stringify(this.self.betChips), JSON.stringify(this.self.chips));
+        },
+
+        check: function () {
+            var money = 0;
+            this.self.betChips.forEach(function (item, index) {
+                money += item.money * item.num;
+            });
+
+            if (money < this.game.maxBet) {
+                alert("有人下注，当前不能Check!");
+                return;
+            }
+
+            if (this.self.role == 3 || this.self.role == 2) {
+                if (money == 0) {
+                    alert("当前不能Check!");
+                    return;
+                }
+            }
+
+            if (this.preBet != money) {
+                alert("您已经押注，不能Check!");
+                return;
+            }
+
+            connection.invoke('Check');
+        },
+        fold: function () {
+            if (this.self.role == 3 || this.self.role == 2) {
+                var money = 0;
+                this.self.betChips.forEach(function (item, index) {
+                    money += item.money * item.num;
+                });
+
+                if (money == 0) {
+                    alert("当前不能Fold!");
+                    return;
+                }
+            }
+            connection.invoke('Fold');
         }
 
     }

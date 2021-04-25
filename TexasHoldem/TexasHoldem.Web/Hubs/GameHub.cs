@@ -25,6 +25,8 @@ namespace TexasHoldem.Web.Hubs
 
         Task Bet(string betChips, string chips);
 
+        Task Check();
+
     }
 
     public class GameHub : Hub<IGameHub>, IGameHub
@@ -145,14 +147,39 @@ namespace TexasHoldem.Web.Hubs
                     playerChip.Num = chip.num;
             }
             Player.IsActive = false;
-            if (Player.BetMoney > 0)
-                room.CurrentGame.MaxBet = Player.BetMoney;
-            else
-                room.CurrentGame.MaxBet = Player.BetMoney + 1;
+            Player.IsCheck = false;
+
+            room.CurrentGame.MaxBet = Player.BetMoney;
+
             room.CurrentGame.SetPoolChips();
             await Clients.All.UpdatePlayer(Player);
             Thread.Sleep(500);
             await Clients.All.UpdateGame(room.CurrentGame);
+        }
+
+        public async Task Check()
+        {
+            Player.IsActive = false;
+            Player.IsCheck = true;
+            var room = _roomService.Rooms.First();
+            room.CurrentGame.IsAllCheck();
+            await Clients.All.UpdatePlayer(Player);
+            Thread.Sleep(500);
+            await Clients.All.UpdateGame(room.CurrentGame);
+
+        }
+        public async Task Fold()
+        {
+            Player.IsActive = false;
+            Player.IsCheck = false;
+
+            Player.Status = GamePlayerStatus.Fold;
+            var room = _roomService.Rooms.First();
+            room.CurrentGame.Next();
+            await Clients.All.UpdatePlayer(Player);
+            Thread.Sleep(500);
+            await Clients.All.UpdateGame(room.CurrentGame);
+
         }
     }
 }

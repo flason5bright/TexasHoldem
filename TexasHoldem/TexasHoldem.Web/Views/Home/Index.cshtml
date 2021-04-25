@@ -192,7 +192,6 @@
 
     .playerbet {
         border: solid 2px white;
-        background: #999999;
         opacity: 0.7;
         margin: 2px;
         color: white;
@@ -206,13 +205,13 @@
 
         <div>
             <div class="hearderRow1">
-                <gamer :seat="playerSeats[0]" :self="self" :player-status="self.playerStatus" :index="0"></gamer>
-                <gamer :seat="playerSeats[8]" :self="self" :player-status="self.playerStatus" :index="8"></gamer>
+                <gamer :seat="playerSeats[0]" :game="game" :self="self" :player-status="self.playerStatus" :index="0"></gamer>
+                <gamer :seat="playerSeats[8]" :game="game" :self="self" :player-status="self.playerStatus" :index="8"></gamer>
             </div>
             <div class="game">
                 <div class="headercolumn">
-                    <gamer :seat="playerSeats[1]" :self="self" :player-status="self.playerStatus" :index="1"></gamer>
-                    <gamer :seat="playerSeats[2]" :self="self" :player-status="self.playerStatus" :index="2"></gamer>
+                    <gamer :seat="playerSeats[1]" :game="game" :self="self" :player-status="self.playerStatus" :index="1"></gamer>
+                    <gamer :seat="playerSeats[2]" :game="game" :self="self" :player-status="self.playerStatus" :index="2"></gamer>
                 </div>
                 @*<img id="desktop" class="desktop" src="~/img/desktop2.png" />*@
                 <div id="desktop" class="desktop">
@@ -243,14 +242,14 @@
                     </div>
                 </div>
                 <div class="headercolumn">
-                    <gamer :seat="playerSeats[6]" :self="self" :player-status="self.playerStatus" :index="6"></gamer>
-                    <gamer :seat="playerSeats[7]" :self="self" :player-status="self.playerStatus" :index="7"></gamer>
+                    <gamer :seat="playerSeats[6]" :game="game" :self="self" :player-status="self.playerStatus" :index="6"></gamer>
+                    <gamer :seat="playerSeats[7]" :game="game" :self="self" :player-status="self.playerStatus" :index="7"></gamer>
                 </div>
             </div>
             <div class="hearderRow2">
-                <gamer :seat="playerSeats[3]" :self="self" :player-status="self.playerStatus" :index="3"></gamer>
-                <gamer :seat="playerSeats[4]" :self="self" :player-status="self.playerStatus" :index="4"></gamer>
-                <gamer :seat="playerSeats[5]" :self="self" :player-status="self.playerStatus" :index="5"></gamer>
+                <gamer :seat="playerSeats[3]" :game="game" :self="self" :player-status="self.playerStatus" :index="3"></gamer>
+                <gamer :seat="playerSeats[4]" :game="game" :self="self" :player-status="self.playerStatus" :index="4"></gamer>
+                <gamer :seat="playerSeats[5]" :game="game" :self="self" :player-status="self.playerStatus" :index="5"></gamer>
             </div>
         </div>
         <h2 ref="selfName" hidden>@ViewBag.Player.Name</h2>
@@ -293,7 +292,8 @@
                     </div>
                     <div>
                         <input type="button" id="btnBet" v-if="self.isActive" v-on:click="bet" value="下注" class="btn btn-success btn-block" />
-                        <input type="button" id="btnCall" v-if="self.isActive" v-on:click="bet" value="弃牌" class="btn btn-success btn-block" />
+                        <input type="button" id="btnBet" v-if="self.isActive" v-on:click="check" value="Check" class="btn btn-success btn-block" />
+                        <input type="button" id="btnCall" v-if="self.isActive" v-on:click="fold" value="弃牌" class="btn btn-success btn-block" />
 
                     </div>
                 </div>
@@ -341,7 +341,7 @@
 </template>
 <template id="gamePool">
     <div class="riches" style="color:white">
-        <label>{{game.poolMoney}}:</label>
+        <label>底池 {{game.poolMoney}}:</label>
         <div v-for="(chip, index) in game.poolChips">
             <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
         </div>
@@ -383,6 +383,10 @@
                 <div style="margin:2px; display:flex" v-if="seat.poker1">
                     <img class="gamerpoker" :src="getFirstImg()" />
                     <img class="gamerpoker" :src="getSecondImg()" />
+                </div>
+                <div>
+                    <label v-if="seat.isCheck" style="color:red">Check</label>
+                    <label v-if="seat.status==1" style="color:red">弃牌</label>
                 </div>
             </div>
         </div>

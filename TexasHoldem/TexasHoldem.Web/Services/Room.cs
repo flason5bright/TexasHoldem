@@ -32,13 +32,19 @@ namespace TexasHoldem.Web
             CurrentGame.Shuffled += CurrentGame_Shuffled;
             CurrentGame.Shuffling += CurrentGame_Shuffled;
             CurrentGame.Dealing += CurrentGame_Dealing;
-            CurrentGame.GameUpdated += CurrentGame_GameUpdated; ; 
+            CurrentGame.GameUpdated += CurrentGame_GameUpdated;
+            CurrentGame.PlayersUpdated += CurrentGame_PlayersUpdated;
 
 
 
             await CurrentGame.StartGame()
                 .ContinueWith((obj) => CurrentGame.Shuffle())
                  .ContinueWith((obj) => CurrentGame.DealCards());
+        }
+
+        private async Task CurrentGame_PlayersUpdated(Player player)
+        {
+            await _hubContext.Clients.All.UpdatePlayers(CurrentGame.Players);
         }
 
         private async Task CurrentGame_PlayerUpdated(Player player)
