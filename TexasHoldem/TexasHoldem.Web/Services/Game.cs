@@ -152,7 +152,7 @@ namespace TexasHoldem.Web.Services
                 this.Players[_currentIndex].IsActive = true;
                 PlayerUpdated?.Invoke(this.Players[_currentIndex]);
             }
-           
+
         }
 
         public void IsAllCheck()
@@ -220,7 +220,15 @@ namespace TexasHoldem.Web.Services
             }
             else
             {
-                FinalCompute();
+                List<FinalPoker> pokers = new List<FinalPoker>();
+                var currentPlayers = Players.Where(it => it.Status == GamePlayerStatus.Play);
+                foreach (var player in currentPlayers)
+                {
+                    pokers.Add(new FinalPoker(player.Poker1, player.Poker2, RiverPokers, player.Id));
+                }
+
+                FinalCompute(pokers);
+                return;
             }
 
             _currentRound = (Round)(_currentRound + 1);
@@ -236,14 +244,44 @@ namespace TexasHoldem.Web.Services
 
         }
 
-        private void FinalCompute()
+        private void FinalCompute(List<FinalPoker> pokers)
         {
             this.IsFinished = true;
+            var result = PokerService.Instance.Summary(pokers).GroupBy(it => it.Result);
+            foreach (var item in result)
+            {
+                foreach (var fp in item)
+                {
+                    var player = Players.FirstOrDefault(it => it.Id == fp.PlayerId);
+                    player.IsWinner = true;
+                    foreach (var chip in this.PoolChips)
+                    {
+                        var pChip = player.Chips.FirstOrDefault(it => it.Money == chip.Money);
+                        pChip.Num += chip.Num;
+                    }
+                    break;
+                }
+
+                break;
+            }
+
+            PlayersUpdated?.Invoke(this.Players[_currentIndex]);
+        }
+
+        private void GoToFinal()
+        {
+            _currentRound = Round.Final;
+            OpenAll();
         }
 
         private bool CanGoNextRound()
         {
             var currentPlayers = Players.Where(it => it.Status == GamePlayerStatus.Play);
+            if (currentPlayers.Count() == 1)
+            {
+                GoToFinal();
+                return true;
+            }
             foreach (var player in currentPlayers)
             {
                 if (player.Money > 0)
@@ -276,5 +314,31 @@ namespace TexasHoldem.Web.Services
             RiverPokers[4] = _openRiverPokers[4];
         }
 
+        protected void OpenAll()
+        {
+            RiverPokers[0] = _openRiverPokers[0];
+            RiverPokers[1] = _openRiverPokers[1];
+            RiverPokers[2] = _openRiverPokers[2];
+            RiverPokers[3] = _openRiverPokers[3];
+            RiverPokers[4] = _openRiverPokers[4];
+        }
+
+    }
+
+    public class FinalPoker
+    {
+        public List<Poker> Pokers { get; }
+
+        public float Result { get; set; }
+
+        public Guid PlayerId { get; set; }
+        public FinalPoker(Poker poker1, Poker poker2, IList<Poker> riverPoker, Guid playerId)
+        {
+            this.PlayerId = playerId;
+            Pokers = new List<Poker>();
+            Pokers.Add(poker1);
+            Pokers.Add(poker2);
+            Pokers.AddRange(riverPoker);
+        }
     }
 }
