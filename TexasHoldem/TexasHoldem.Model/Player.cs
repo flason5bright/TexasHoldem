@@ -25,6 +25,12 @@ namespace TexasHoldem.Model
 
         public bool IsWinner { get; set; } = false;
 
+        public Round CurrentRound { get; set; } = Round.Default;
+        public bool IsAllIn
+        {
+            get { return Money == 0; }
+        }
+
         public IEnumerable<Chip> Chips { get; set; }
 
         public IEnumerable<Chip> BetChips { get; set; }
@@ -44,10 +50,10 @@ namespace TexasHoldem.Model
                 new Chip(100,4),
                 new Chip(500,4),
             };
-            SetBetChips();
+            Reset();
         }
 
-        public void SetBetChips()
+        public void Reset()
         {
             this.IsCheck = false;
             this.IsActive = false;
@@ -66,18 +72,5 @@ namespace TexasHoldem.Model
         {
             return this.Name == (other as Player).Name;
         }
-    }
-    public class Chip
-    {
-        public int Money { get; set; }
-
-        public int Num { get; set; }
-        public Chip(int money, int num)
-        {
-            this.Money = money;
-            this.Num = num;
-
-        }
-
     }
 }

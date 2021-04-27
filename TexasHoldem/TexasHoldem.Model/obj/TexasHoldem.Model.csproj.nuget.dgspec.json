@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj": {}
+    "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj": {}
   },
   "projects": {
-    "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj": {
+    "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj",
+        "projectUniqueName": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj",
         "projectName": "TexasHoldem.Model",
-        "projectPath": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj",
-        "packagesPath": "C:\\Users\\fengyong\\.nuget\\packages\\",
-        "outputPath": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\obj\\",
+        "projectPath": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj",
+        "packagesPath": "C:\\Users\\flaso\\.nuget\\packages\\",
+        "outputPath": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\fengyong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\flaso\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,7 +29,6 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
-            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -38,7 +40,6 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "targetAlias": "netcoreapp3.1",
           "imports": [
             "net461",
             "net462",
@@ -54,7 +55,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

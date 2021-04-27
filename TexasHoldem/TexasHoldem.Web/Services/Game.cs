@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using TexasHoldem.Model;
@@ -11,14 +12,6 @@ namespace TexasHoldem.Web.Services
     public delegate Task PlayerUpatedHandler(Player player);
     public delegate Task RiverPokerDealingHandler(Poker poker);
     public delegate Task DealPokerHandler(Player player);
-
-    public enum Round
-    {
-        First = 1,
-        Second,
-        Third,
-        Final
-    }
     public class Game
     {
         public int Id { get; private set; }
@@ -34,11 +27,11 @@ namespace TexasHoldem.Web.Services
         public int MaxBet { get; set; }
 
         public int PoolMoney { get { return PoolChips.Sum(it => it.Money * it.Num); } }
+        public Round CurrentRound { get; set; } = Round.First;
 
         public bool IsFinished { get; set; } = false;
-
         private int _currentIndex = -1;
-        private Round _currentRound = Round.First;
+
         private IList<Poker> _openRiverPokers;
         private Poker _backPoker = new Poker(54);
         private int _smallIndex = -1;
@@ -48,7 +41,7 @@ namespace TexasHoldem.Web.Services
             this.Id = id;
             foreach (var player in players)
             {
-                player.SetBetChips();
+                player.Reset();
                 Players.Add(player);
             }
             foreach (var player in Players)
@@ -102,8 +95,6 @@ namespace TexasHoldem.Web.Services
 
         public async Task Shuffle()
         {
-            this.GameStatus = GameStatus.Shuffling;
-            await Shuffling?.Invoke(this);
             Thread.Sleep(500);
             PokerService.Instance.Shuffle();
             await Shuffled?.Invoke(this);
@@ -111,6 +102,7 @@ namespace TexasHoldem.Web.Services
 
         public async Task DealCards()
         {
+            GameStatus = GameStatus.Playing;
             RiverPokers = new List<Poker>();
             _openRiverPokers = new List<Poker>();
             int index = 0;
@@ -134,6 +126,7 @@ namespace TexasHoldem.Web.Services
 
         protected void Start()
         {
+            GameStatus = GameStatus.Started;
             _smallIndex = this.Players.IndexOf(this.Players.FirstOrDefault(it => it.Role == GameRole.Small));
             _currentIndex = _smallIndex;
             this.Players[_currentIndex].IsActive = true;
@@ -141,11 +134,15 @@ namespace TexasHoldem.Web.Services
 
         }
 
+
+        /// <summary>
+        /// 移动到下个玩家
+        /// </summary>
         public void MoveToNext()
         {
             _currentIndex++;
             _currentIndex = _currentIndex % Players.Count();
-            if (this.Players[_currentIndex].Status == GamePlayerStatus.Fold)
+            if (this.Players[_currentIndex].Status == GamePlayerStatus.Fold || this.Players[_currentIndex].IsAllIn)
                 MoveToNext();
             else
             {
@@ -155,6 +152,9 @@ namespace TexasHoldem.Web.Services
 
         }
 
+        /// <summary>
+        /// 判断是不是都check了
+        /// </summary>
         public void IsAllCheck()
         {
             var currentPlayers = Players.Where(it => it.Status == GamePlayerStatus.Play);
@@ -168,6 +168,9 @@ namespace TexasHoldem.Web.Services
             }
         }
 
+        /// <summary>
+        /// 一个玩家下注完计算底池
+        /// </summary>
         public void SetPoolChips()
         {
             InitPoolChips();
@@ -183,6 +186,10 @@ namespace TexasHoldem.Web.Services
             Next();
 
         }
+
+        /// <summary>
+        /// 下一步
+        /// </summary>
         public void Next()
         {
             if (CanGoNextRound())
@@ -195,6 +202,11 @@ namespace TexasHoldem.Web.Services
             }
         }
 
+        /// <summary>
+        /// 查找每轮第一个下注的玩家
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         private int GetFirstIndex(int index)
         {
             if (this.Players[index].Status != GamePlayerStatus.Fold)
@@ -206,15 +218,15 @@ namespace TexasHoldem.Web.Services
 
         private void GoToNextRound()
         {
-            if (_currentRound == Round.First)
+            if (CurrentRound == Round.First)
             {
                 OpenThreeCards();
             }
-            else if (_currentRound == Round.Second)
+            else if (CurrentRound == Round.Second)
             {
                 OpenFourthCards();
             }
-            else if (_currentRound == Round.Third)
+            else if (CurrentRound == Round.Third)
             {
                 OpenFifthCards();
             }
@@ -224,6 +236,7 @@ namespace TexasHoldem.Web.Services
                 var currentPlayers = Players.Where(it => it.Status == GamePlayerStatus.Play);
                 foreach (var player in currentPlayers)
                 {
+                    player.IsCheck = false;
                     pokers.Add(new FinalPoker(player.Poker1, player.Poker2, RiverPokers, player.Id));
                 }
 
@@ -231,7 +244,7 @@ namespace TexasHoldem.Web.Services
                 return;
             }
 
-            _currentRound = (Round)(_currentRound + 1);
+            CurrentRound = (Round)(CurrentRound + 1);
 
             foreach (var item in Players)
             {
@@ -248,29 +261,90 @@ namespace TexasHoldem.Web.Services
         {
             this.IsFinished = true;
             var result = PokerService.Instance.Summary(pokers).GroupBy(it => it.Result);
+
+            var totalMoney = this.PoolMoney;
             foreach (var item in result)
             {
+                if (totalMoney == 0)
+                    break;
+                var count = item.Count();
                 foreach (var fp in item)
                 {
+                    var winMoney = GetChipMoney(totalMoney / count);
                     var player = Players.FirstOrDefault(it => it.Id == fp.PlayerId);
                     player.IsWinner = true;
-                    foreach (var chip in this.PoolChips)
+                    if (player.IsAllIn)
                     {
-                        var pChip = player.Chips.FirstOrDefault(it => it.Money == chip.Money);
-                        pChip.Num += chip.Num;
+                        if (player.BetMoney <= winMoney)
+                        {
+                            AllInPlayerWinMoney(player);
+                            totalMoney -= player.Money;
+                        }
+                        else
+                        {
+                            PlayerWinMoney(player, winMoney);
+                            totalMoney -= winMoney;
+                        }
                     }
-                    break;
+                    else
+                    {
+                        PlayerWinMoney(player, winMoney);
+                        totalMoney -= winMoney;
+                    }
                 }
-
-                break;
             }
 
             PlayersUpdated?.Invoke(this.Players[_currentIndex]);
+            GameUpdated?.Invoke(this);
+        }
+
+        private void AllInPlayerWinMoney(Player player)
+        {
+            foreach (var chip in player.BetChips)
+            {
+                chip.Num = chip.Num * 2;
+            }
+        }
+
+        private void PlayerWinMoney(Player player, int money)
+        {
+            var chip500 = player.Chips.FirstOrDefault(it => it.Money == 500);
+            chip500.Num += (int)Math.Floor((double)money / 500);
+            money = money % 500;
+            var chip100 = player.Chips.FirstOrDefault(it => it.Money == 100);
+            chip100.Num += (int)Math.Floor((double)money / 100);
+            money = money % 100;
+            var chip50 = player.Chips.FirstOrDefault(it => it.Money == 50);
+            chip50.Num += (int)Math.Floor((double)money / 50);
+            money = money % 50;
+            var chip25 = player.Chips.FirstOrDefault(it => it.Money == 25);
+            chip25.Num += (int)Math.Floor((double)money / 25);
+            money = money % 25;
+            var chip5 = player.Chips.FirstOrDefault(it => it.Money == 5);
+            chip5.Num += (int)Math.Floor((double)money / 5);
+        }
+
+        /// <summary>
+        /// 33.3333,55.55
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private int GetChipMoney(float input)
+        {
+            var input1 = (int)Math.Ceiling(input);
+            var last = input1 % 10;
+            if (last == 5 || last == 0)
+                return input1;
+            if (last < 5)
+                return input1 - last + 5;
+            if (last > 5)
+                return input1 - last + 10;
+            return input1;
         }
 
         private void GoToFinal()
         {
-            _currentRound = Round.Final;
+            CurrentRound = Round.Final;
             OpenAll();
         }
 
@@ -284,7 +358,13 @@ namespace TexasHoldem.Web.Services
             }
             foreach (var player in currentPlayers)
             {
-                if (player.Money > 0)
+                if (player.IsAllIn)
+                    player.CurrentRound = this.CurrentRound;
+
+                if (player.CurrentRound < this.CurrentRound)
+                    return false;
+
+                if (!player.IsAllIn)
                 {
                     if (player.BetMoney < this.MaxBet)
                     {
@@ -323,22 +403,5 @@ namespace TexasHoldem.Web.Services
             RiverPokers[4] = _openRiverPokers[4];
         }
 
-    }
-
-    public class FinalPoker
-    {
-        public List<Poker> Pokers { get; }
-
-        public float Result { get; set; }
-
-        public Guid PlayerId { get; set; }
-        public FinalPoker(Poker poker1, Poker poker2, IList<Poker> riverPoker, Guid playerId)
-        {
-            this.PlayerId = playerId;
-            Pokers = new List<Poker>();
-            Pokers.Add(poker1);
-            Pokers.Add(poker2);
-            Pokers.AddRange(riverPoker);
-        }
     }
 }

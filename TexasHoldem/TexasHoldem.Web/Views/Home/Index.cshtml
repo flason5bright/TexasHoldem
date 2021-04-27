@@ -97,16 +97,16 @@
     }
 
     .chip {
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
         margin: 3px;
         border-radius: 15px;
     }
 
 
     .chip-little {
-        width: 10px;
-        height: 10px;
+        width: 20px;
+        height: 20px;
         margin: 1px;
         border-radius: 5px;
     }
@@ -196,6 +196,10 @@
         margin: 2px;
         color: white;
     }
+
+    .chipBtn {
+        border-radius: 10px;
+    }
 </style>
 
 <div class="text-center">
@@ -205,13 +209,13 @@
 
         <div>
             <div class="hearderRow1">
-                <gamer :seat="playerSeats[0]" :game="game" :self="self" :player-status="self.playerStatus" :index="0"></gamer>
-                <gamer :seat="playerSeats[8]" :game="game" :self="self" :player-status="self.playerStatus" :index="8"></gamer>
+                <gamer :seat="playerSeats[0]" :game="game" :self="self" :index="0"></gamer>
+                <gamer :seat="playerSeats[8]" :game="game" :self="self" :index="8"></gamer>
             </div>
             <div class="game">
                 <div class="headercolumn">
-                    <gamer :seat="playerSeats[1]" :game="game" :self="self" :player-status="self.playerStatus" :index="1"></gamer>
-                    <gamer :seat="playerSeats[2]" :game="game" :self="self" :player-status="self.playerStatus" :index="2"></gamer>
+                    <gamer :seat="playerSeats[1]" :game="game" :self="self" :index="1"></gamer>
+                    <gamer :seat="playerSeats[2]" :game="game" :self="self" :index="2"></gamer>
                 </div>
                 @*<img id="desktop" class="desktop" src="~/img/desktop2.png" />*@
                 <div id="desktop" class="desktop">
@@ -242,14 +246,14 @@
                     </div>
                 </div>
                 <div class="headercolumn">
-                    <gamer :seat="playerSeats[6]" :game="game" :self="self" :player-status="self.playerStatus" :index="6"></gamer>
-                    <gamer :seat="playerSeats[7]" :game="game" :self="self" :player-status="self.playerStatus" :index="7"></gamer>
+                    <gamer :seat="playerSeats[6]" :game="game" :self="self" :index="6"></gamer>
+                    <gamer :seat="playerSeats[7]" :game="game" :self="self" :index="7"></gamer>
                 </div>
             </div>
             <div class="hearderRow2">
-                <gamer :seat="playerSeats[3]" :game="game" :self="self" :player-status="self.playerStatus" :index="3"></gamer>
-                <gamer :seat="playerSeats[4]" :game="game" :self="self" :player-status="self.playerStatus" :index="4"></gamer>
-                <gamer :seat="playerSeats[5]" :game="game" :self="self" :player-status="self.playerStatus" :index="5"></gamer>
+                <gamer :seat="playerSeats[3]" :game="game" :self="self" :index="3"></gamer>
+                <gamer :seat="playerSeats[4]" :game="game" :self="self" :index="4"></gamer>
+                <gamer :seat="playerSeats[5]" :game="game" :self="self" :index="5"></gamer>
             </div>
         </div>
         <h2 ref="selfName" hidden>@ViewBag.Player.Name</h2>
@@ -276,17 +280,17 @@
                     </div>
                     <div class="allchips">
                         <div class="riches" v-if="self.isActive">
-                            <label>押注 </label><label style="width:80px">{{betmoney}}</label><label>:</label>
-                            <div v-for="(chip, index) in self.betChips" style="margin-right:5px">
+                            <b>押注 </b><b> {{betmoney}}:</b>
+                            <div v-for="(chip, index) in self.betChips" style="margin-right:10px">
                                 <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
-                                <input type="button" v-on:click="removeBet(chip)" value="减" />
+                                <input class="btn btn-success chipBtn" type="button" v-on:click="removeBet(chip)" value="-" />
                             </div>
                         </div>
                         <div class="riches">
-                            <label>资产 </label><label style="width:80px">{{money}}</label> <label>:</label>
-                            <div v-for="(chip, index) in self.chips" style="margin-right:5px">
+                            <b>资产 </b><b> {{money}}:</b>
+                            <div v-for="(chip, index) in self.chips" style="margin-right:10px;">
                                 <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
-                                <input type="button" v-on:click="addBet(chip)" value="加" v-if="self.isActive" />
+                                <input type="button" class="btn btn-success chipBtn" v-on:click="addBet(chip)" value="+" v-if="self.isActive" />
                             </div>
                         </div>
                     </div>
@@ -303,6 +307,24 @@
             </div>
 
         </div>
+        <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myModal" ref="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+                    </div>
+                    <div class="modal-body">按下 ESC 按钮退出。</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary">提交更改</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
         <div>
             <label>玩家列表</label>
             <table class="table table-striped">
@@ -340,8 +362,8 @@
     </div>
 </template>
 <template id="gamePool">
-    <div class="riches" style="color:white">
-        <label>底池 {{game.poolMoney}}:</label>
+    <div class="riches" style="color:white" v-if="game.poolChips">
+        <b>底池 {{game.poolMoney}} : </b>
         <div v-for="(chip, index) in game.poolChips">
             <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
         </div>
@@ -387,7 +409,7 @@
                 <div>
                     <label v-if="seat.isCheck" style="color:red">Check</label>
                     <label v-if="seat.status==1" style="color:red">弃牌</label>
-                    <label v-if="seat.IsWinner" style="color:red">Win!</label>
+                    <label v-if="seat.isWinner" style="color:red">Win!</label>
                 </div>
             </div>
         </div>

@@ -143,25 +143,17 @@ Vue.component('gamer', {
     props: {
         seat: Object,
         index: Number,
-        playerStatus: Number,
         self: Object,
         game: Object
     },
-    watch: {
-        playerStatus: function () {
-            if (this.playerStatus === 2) {
-                this.canSelectSeat = false;
-            }
-            else {
-                this.canSelectSeat = true;
-            }
-        }
-    },
     methods: {
         selectSeat: function (index) {
-            //if (!this.canSelectSeat) {
-            //    alert("游戏中不能换位置!");
-            //}
+            if (this.game) {
+                if (this.game.gameStatus > 0) {
+                    alert("游戏中不能换位置!");
+                    return;
+                }
+            }
             connection.invoke('SelectSeat', index).then(function (data) {
                 if (!data)
                     alert("该位置已经被别人选中!");
@@ -200,7 +192,7 @@ var app = new Vue({
         game: {},
         notification: "请选择座位!",
         betChips: [],
-        preBet:0
+        preBet: 0
     },
     computed: {
         playerSeats: function () {
@@ -309,7 +301,9 @@ var app = new Vue({
             if (game) {
                 that.$nextTick(() => {
                     that.game = game;
-                    that.notification = "Game" + that.game.id + that.game.gameStatus;
+                    that.notification = "Game" + that.game.id + "  " + that.game.gameStatus;
+                    if (that.game.isFinished)
+                        that.$refs.myModal.modal('show');
                 })
             }
         });
@@ -391,7 +385,7 @@ var app = new Vue({
                 }
             }
             if (this.self.role == 3) {
-                if (money != 25 && this.game.maxBet == 0) {
+                if (money != 25 && this.game.maxBet == 5) {
                     alert("大盲的第一轮下注必须是25!");
                     return;
                 }
@@ -402,7 +396,7 @@ var app = new Vue({
             }
 
             if (money == this.preBet) {
-                connection.invoke('Check');
+                this.check();
             }
 
             this.preBet = money;

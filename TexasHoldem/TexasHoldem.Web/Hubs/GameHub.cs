@@ -133,8 +133,6 @@ namespace TexasHoldem.Web.Hubs
                 if (playerBetChip != null)
                     playerBetChip.Num = chip.num;
 
-
-
                 var poolChip = pool.FirstOrDefault(it => it.Money == chip.money);
                 if (poolChip != null)
                     poolChip.Num += chip.num;
@@ -148,22 +146,26 @@ namespace TexasHoldem.Web.Hubs
             }
             Player.IsActive = false;
             Player.IsCheck = false;
+            Player.CurrentRound = room.CurrentGame.CurrentRound;
+            await Clients.All.UpdatePlayer(Player);
 
             room.CurrentGame.MaxBet = Player.BetMoney;
-
             room.CurrentGame.SetPoolChips();
-            await Clients.All.UpdatePlayer(Player);
+
             Thread.Sleep(500);
             await Clients.All.UpdateGame(room.CurrentGame);
         }
 
         public async Task Check()
         {
+            var room = _roomService.Rooms.First();
             Player.IsActive = false;
             Player.IsCheck = true;
-            var room = _roomService.Rooms.First();
-            room.CurrentGame.IsAllCheck();
+            Player.CurrentRound = room.CurrentGame.CurrentRound;
             await Clients.All.UpdatePlayer(Player);
+
+           
+            room.CurrentGame.IsAllCheck();
             Thread.Sleep(500);
             await Clients.All.UpdateGame(room.CurrentGame);
 
