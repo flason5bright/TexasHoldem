@@ -7,3 +7,12 @@ F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debu
 F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.dll
 F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.pdb
 F:\DotNetProjects\TexasHoldem\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.csprojAssemblyReference.cache
+C:\Projects\Projects\TH\TexasHoldem\TexasHoldem\TexasHoldem.Model\bin\Debug\netcoreapp3.1\TexasHoldem.Model.deps.json
+C:\Projects\Projects\TH\TexasHoldem\TexasHoldem\TexasHoldem.Model\bin\Debug\netcoreapp3.1\TexasHoldem.Model.dll
+C:\Projects\Projects\TH\TexasHoldem\TexasHoldem\TexasHoldem.Model\bin\Debug\netcoreapp3.1\TexasHoldem.Model.pdb
+C:\Projects\Projects\TH\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.csprojAssemblyReference.cache
+C:\Projects\Projects\TH\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.AssemblyInfoInputs.cache
+C:\Projects\Projects\TH\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.AssemblyInfo.cs
+C:\Projects\Projects\TH\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.csproj.CoreCompileInputs.cache
+C:\Projects\Projects\TH\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.dll
+C:\Projects\Projects\TH\TexasHoldem\TexasHoldem\TexasHoldem.Model\obj\Debug\netcoreapp3.1\TexasHoldem.Model.pdb

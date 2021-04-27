@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\Test\\Test.csproj": {}
+    "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\Test\\Test.csproj": {}
   },
   "projects": {
-    "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\Test\\Test.csproj": {
+    "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\Test\\Test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\Test\\Test.csproj",
+        "projectUniqueName": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\Test\\Test.csproj",
         "projectName": "Test",
-        "projectPath": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\Test\\Test.csproj",
-        "packagesPath": "C:\\Users\\flaso\\.nuget\\packages\\",
-        "outputPath": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\Test\\obj\\",
+        "projectPath": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\Test\\Test.csproj",
+        "packagesPath": "C:\\Users\\fengyong\\.nuget\\packages\\",
+        "outputPath": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\Test\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\flaso\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\fengyong\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -29,9 +26,10 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\TexasHoldem.Web.csproj": {
-                "projectPath": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\TexasHoldem.Web.csproj"
+              "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\TexasHoldem.Web.csproj": {
+                "projectPath": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\TexasHoldem.Web.csproj"
               }
             }
           }
@@ -44,6 +42,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "imports": [
             "net461",
             "net462",
@@ -62,24 +61,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj": {
+    "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj",
+        "projectUniqueName": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj",
         "projectName": "TexasHoldem.Model",
-        "projectPath": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj",
-        "packagesPath": "C:\\Users\\flaso\\.nuget\\packages\\",
-        "outputPath": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\obj\\",
+        "projectPath": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj",
+        "packagesPath": "C:\\Users\\fengyong\\.nuget\\packages\\",
+        "outputPath": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\flaso\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\fengyong\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -91,6 +87,7 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -102,6 +99,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "imports": [
             "net461",
             "net462",
@@ -117,24 +115,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\TexasHoldem.Web.csproj": {
+    "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\TexasHoldem.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\TexasHoldem.Web.csproj",
+        "projectUniqueName": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\TexasHoldem.Web.csproj",
         "projectName": "TexasHoldem.Web",
-        "projectPath": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\TexasHoldem.Web.csproj",
-        "packagesPath": "C:\\Users\\flaso\\.nuget\\packages\\",
-        "outputPath": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\obj\\",
+        "projectPath": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\TexasHoldem.Web.csproj",
+        "packagesPath": "C:\\Users\\fengyong\\.nuget\\packages\\",
+        "outputPath": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Web\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\flaso\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\fengyong\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -146,9 +141,10 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj": {
-                "projectPath": "F:\\DotNetProjects\\TexasHoldem\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj"
+              "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj": {
+                "projectPath": "C:\\Projects\\Projects\\TH\\TexasHoldem\\TexasHoldem\\TexasHoldem.Model\\TexasHoldem.Model.csproj"
               }
             }
           }
@@ -161,6 +157,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "Microsoft.AspNetCore.SignalR.Core": {
               "target": "Package",
@@ -189,7 +186,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }
