@@ -23,7 +23,7 @@ namespace TexasHoldem.Web.Hubs
 
         Task StartGame();
 
-        Task Bet(string betChips, string chips);
+        Task Bet(int bet);
 
         Task Check();
 
@@ -117,33 +117,13 @@ namespace TexasHoldem.Web.Hubs
             await Clients.All.UpdateGame(game);
         }
 
-        public async Task Bet(string betChips, string chips)
+        public async Task Bet(int bet)
         {
-            var bet = JsonConvert.DeserializeAnonymousType(betChips, new[] { new { money = -1, num = -1 } }.ToList());
-            var rich = JsonConvert.DeserializeAnonymousType(chips, new[] { new { money = -1, num = -1 } }.ToList());
-
-
             var room = _roomService.Rooms.First();
-            var pool = room.CurrentGame.PoolChips;
-            // [{"money":5,"num":4}]
-            foreach (var chip in bet)
-            {
 
-                var playerBetChip = Player.BetChips.FirstOrDefault(it => it.Money == chip.money);
-                if (playerBetChip != null)
-                    playerBetChip.Num = chip.num;
+            Player.BetMoney = bet;
+            Player.Money -= bet;
 
-                var poolChip = pool.FirstOrDefault(it => it.Money == chip.money);
-                if (poolChip != null)
-                    poolChip.Num += chip.num;
-            }
-
-            foreach (var chip in rich)
-            {
-                var playerChip = Player.Chips.FirstOrDefault(it => it.Money == chip.money);
-                if (playerChip != null)
-                    playerChip.Num = chip.num;
-            }
             Player.IsActive = false;
             Player.IsCheck = false;
             Player.CurrentRound = room.CurrentGame.CurrentRound;
@@ -176,9 +156,9 @@ namespace TexasHoldem.Web.Hubs
             Player.IsCheck = false;
 
             Player.Status = GamePlayerStatus.Fold;
+            await Clients.All.UpdatePlayer(Player);
             var room = _roomService.Rooms.First();
             room.CurrentGame.Next();
-            await Clients.All.UpdatePlayer(Player);
             Thread.Sleep(500);
             await Clients.All.UpdateGame(room.CurrentGame);
 

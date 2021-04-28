@@ -145,8 +145,8 @@
             border: 4px solid #1E9FFF;
         }
 
-    .allchips {
-        width: 100%;
+    .fullwidth {
+        width: 80%;
     }
 
     .riches {
@@ -195,6 +195,7 @@
         opacity: 0.7;
         margin: 2px;
         color: white;
+        width: 70px;
     }
 
     .chipBtn {
@@ -225,13 +226,6 @@
                                 <div>
                                     <span>{{player.name}}</span><br />
                                     <span>{{player.betMoney}}</span><br />
-                                </div>
-                                <div>
-                                    <div v-for="betChip in player.betChips">
-                                        <div v-if="betChip.num>0">
-                                            <img class="chip-little" :src="'/img/chip'+betChip.money+'.png'" />x{{betChip.num}}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -278,21 +272,42 @@
                             <img class="selfpoker" :src="self.poker2.img" />
                         </div>
                     </div>
-                    <div class="allchips">
-                        <div class="riches" v-if="self.isActive">
-                            <b>押注 </b><b> {{betmoney}}:</b>
-                            <div v-for="(chip, index) in self.betChips" style="margin-right:10px">
-                                <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
-                                <input class="btn btn-success chipBtn" type="button" v-on:click="removeBet(chip)" value="-" />
-                            </div>
+                    <div class="fullwidth">
+                        <div>
+                            <label>{{self.betMoney}}</label>
                         </div>
                         <div class="riches">
-                            <b>资产 </b><b> {{money}}:</b>
-                            <div v-for="(chip, index) in self.chips" style="margin-right:10px;">
-                                <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
-                                <input type="button" class="btn btn-success chipBtn" v-on:click="addBet(chip)" value="+" v-if="self.isActive" />
-                            </div>
+                            <span>0</span>
+                            <input class="fullwidth" type="range" :disabled="!self.isActive" v-model="self.betMoney" min="0" :max="self.money" step="5" />
+                            <span>{{self.money}}</span>
                         </div>
+                        <div class="riches">
+                            <label v-on:click="remove(5)">-</label> <img class="chip" src="~/img/chip5.png" v-on:click="add(5)" /> <label v-on:click="add(5)">+</label>
+                            <label v-on:click="remove(25)">-</label> <img class="chip" src="~/img/chip25.png" v-on:click="add(25)" /><label v-on:click="add(25)">+</label>
+                            <label v-on:click="remove(50)">-</label> <img class="chip" src="~/img/chip50.png" v-on:click="add(50)" /><label v-on:click="add(50)">+</label>
+                            <label v-on:click="remove(100)">-</label> <img class="chip" src="~/img/chip100.png" v-on:click="add(100)" /><label v-on:click="add(100)">+</label>
+                            <label v-on:click="remove(500)">-</label> <img class="chip" src="~/img/chip500.png" v-on:click="add(500)" /><label v-on:click="add(500)">+</label>
+                        </div>
+
+                        <div>
+                            <span>0</span>
+                            <progress :value="self.money" max="5000" class="fullwidth"></progress>
+                            <span>{{self.money}}</span>
+                        </div>
+                        @*<div class="riches" v-if="self.isActive">
+                                <b>押注 </b><b> {{betmoney}}:</b>
+                                <div v-for="(chip, index) in self.betChips" style="margin-right:10px">
+                                    <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
+                                    <input class="btn btn-success chipBtn" type="button" v-on:click="removeBet(chip)" value="-" />
+                                </div>
+                            </div>
+                            <div class="riches">
+                                <b>资产 </b><b> {{money}}:</b>
+                                <div v-for="(chip, index) in self.chips" style="margin-right:10px;">
+                                    <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
+                                    <input type="button" class="btn btn-success chipBtn" v-on:click="addBet(chip)" value="+" v-if="self.isActive" />
+                                </div>
+                            </div>*@
                     </div>
                     <div>
                         <input type="button" id="btnBet" v-if="self.isActive" v-on:click="bet" value="下注" class="btn btn-success btn-block" />
@@ -308,17 +323,26 @@
 
         </div>
         <!-- 模态框（Modal） -->
-        <div class="modal fade" id="myModal" ref="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <div class="modal" style="display:block" id="myModal" v-if="showResult" aria-hidden="false" role="dialog">
+            <div class="modal-dialog" style="margin-top:100px">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+                        <button type="button" class="close" v-on:click="showResult=false">×</button>
+                        <h4 class="modal-title" id="myModalLabel">统计</h4>
                     </div>
-                    <div class="modal-body">按下 ESC 按钮退出。</div>
+                    <div class="modal-body">
+                        <div v-for="(item, index) in game.finalPokers" style="display:flex;justify-content:space-between ">
+                            <span>{{item.playerName}}:</span>
+                            <div style="margin-left:100px; display:flex">
+                                <div v-for="(poker, index) in item.pokers">
+                                    <img class="gamerpoker" :src="poker.img" />
+                                </div>
+                            </div>
+                            <span style="color:red">{{item.style}}</span>
+                        </div>
+                    </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                        <button type="button" class="btn btn-primary">提交更改</button>
+                        <button type="button" class="btn btn-success" v-on:click="showResult=false">关闭</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -356,17 +380,12 @@
 <template id="riches">
     <div class="riches">
         <label>{{player.money}}:</label>
-        <div v-for="(chip, index) in player.chips">
-            <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
-        </div>
+        <progress :value="player.money" max="5000"></progress>
     </div>
 </template>
 <template id="gamePool">
-    <div class="riches" style="color:white" v-if="game.poolChips">
-        <b>底池 {{game.poolMoney}} : </b>
-        <div v-for="(chip, index) in game.poolChips">
-            <img class="chip" :src="'/img/chip'+chip.money+'.png'" />x{{chip.num}}
-        </div>
+    <div class="riches" style="color:white" v-if="this.game.gameStatus > 0">
+        <b>底池 {{game.poolMoney}} : {{this.game.poolMoney}}</b>
     </div>
 </template>
 

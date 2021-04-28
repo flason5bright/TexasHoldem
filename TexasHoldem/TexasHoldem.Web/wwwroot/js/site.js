@@ -191,8 +191,8 @@ var app = new Vue({
         roles: ["N/A", '庄', "小盲", "大盲"],
         game: {},
         notification: "请选择座位!",
-        betChips: [],
-        preBet: 0
+        preBet: 0,
+        showResult: false
     },
     computed: {
         playerSeats: function () {
@@ -303,17 +303,13 @@ var app = new Vue({
                     that.game = game;
                     that.notification = "Game" + that.game.id + "  " + that.game.gameStatus;
                     if (that.game.isFinished)
-                        that.$refs.myModal.modal('show');
+                        that.showResult = true;
                 })
             }
         });
 
     },
     methods: {
-        prepare: function (event) {
-            connection.invoke('Prepare', playername);
-        },
-
         startGame: function () {
             connection.invoke('StartGame');
         },
@@ -325,58 +321,8 @@ var app = new Vue({
                 this.betChips.splice(index, 1);
             }
         },
-        addBet: function (chip) {
-            if (chip.num == 0) {
-                alert("该筹码已经用完!");
-                return;
-            }
-
-            let that = this;
-
-            var index = that.self.chips.findIndex(function (item) {
-                return item.money == chip.money;
-            });
-            chip.num--;
-            that.self.chips.splice(index, 1, chip);
-
-            var chipIndex = -1;
-            var betChip = that.self.betChips.find(function (item, index) {
-                if (item.money == chip.money)
-                    chipIndex = index;
-                return item.money == chip.money;
-            });
-            betChip.num++;
-            that.self.betChips.splice(chipIndex, 1, betChip);
-        },
-        removeBet: function (betChip) {
-
-            if (betChip.num == 0) {
-                alert("该筹码已经退完!");
-                return;
-            }
-
-            let that = this;
-
-            var betIndex = that.self.betChips.findIndex(function (item) {
-                return item.money == betChip.money;
-            });
-            betChip.num--;
-            that.self.betChips.splice(betIndex, 1, betChip);
-
-            var chipIndex = -1;
-            var chip = that.self.chips.find(function (item, index) {
-                if (item.money == betChip.money)
-                    chipIndex = index;
-                return item.money == betChip.money;
-            });
-            chip.num++;
-            that.self.chips.splice(chipIndex, 1, chip);
-        },
         bet: function () {
-            var money = 0;
-            this.self.betChips.forEach(function (item, index) {
-                money += item.money * item.num;
-            });
+            var money = this.self.betMoney;
 
             if (this.self.role == 2) {
                 if (money != 5 && this.game.maxBet == 0) {
@@ -385,8 +331,8 @@ var app = new Vue({
                 }
             }
             if (this.self.role == 3) {
-                if (money != 25 && this.game.maxBet == 5) {
-                    alert("大盲的第一轮下注必须是25!");
+                if (money != 10 && this.game.maxBet == 5) {
+                    alert("大盲的第一轮下注必须是10!");
                     return;
                 }
             }
@@ -401,14 +347,23 @@ var app = new Vue({
 
             this.preBet = money;
 
-            connection.invoke('Bet', JSON.stringify(this.self.betChips), JSON.stringify(this.self.chips));
+            connection.invoke('Bet', money);
+        },
+        add: function (bet) {
+            if (!this.self.isActive)
+                return;
+            if (this.self.betMoney + bet <= this.self.money)
+                this.self.betMoney += bet;
+        },
+        remove: function (bet) {
+            if (!this.self.isActive)
+                return;
+            if (this.self.money >=bet)
+                this.self.betMoney -= bet;
         },
 
         check: function () {
-            var money = 0;
-            this.self.betChips.forEach(function (item, index) {
-                money += item.money * item.num;
-            });
+            var money = this.self.betMoney;
 
             if (money < this.game.maxBet) {
                 alert("有人下注，当前不能Check!");
@@ -416,7 +371,7 @@ var app = new Vue({
             }
 
             if (this.self.role == 3 || this.self.role == 2) {
-                if (money == 0) {
+                if (this.preBet == 0) {
                     alert("当前不能Check!");
                     return;
                 }
@@ -431,10 +386,7 @@ var app = new Vue({
         },
         fold: function () {
             if (this.self.role == 3 || this.self.role == 2) {
-                var money = 0;
-                this.self.betChips.forEach(function (item, index) {
-                    money += item.money * item.num;
-                });
+                var money = this.preBet;
 
                 if (money == 0) {
                     alert("当前不能Fold!");
