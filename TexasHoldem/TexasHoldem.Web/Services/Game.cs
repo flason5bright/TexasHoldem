@@ -20,13 +20,13 @@ namespace TexasHoldem.Web.Services
 
         public IList<Poker> AllPokers { get { return PokerService.Instance.AllPokers; } }
 
-        public GameStatus GameStatus { get; set; }
+        public List<FinalPoker> FinalPokers { get; set; } = new List<FinalPoker>();
 
-        public IList<Chip> PoolChips { get; set; }
+        public GameStatus GameStatus { get; set; }
 
         public int MaxBet { get; set; }
 
-        public int PoolMoney { get { return PoolChips.Sum(it => it.Money * it.Num); } }
+        public int PoolMoney { get; set; }
         public Round CurrentRound { get; set; } = Round.First;
 
         public bool IsFinished { get; set; } = false;
@@ -63,14 +63,7 @@ namespace TexasHoldem.Web.Services
 
         private void InitPoolChips()
         {
-            PoolChips = new List<Chip>()
-            {
-                new Chip(5,0),
-                new Chip(25,0),
-                new Chip(50,0),
-                new Chip(100,0),
-                new Chip(500,0),
-            };
+            PoolMoney = 0;
         }
 
         public async Task StartGame()
@@ -174,15 +167,7 @@ namespace TexasHoldem.Web.Services
         public void SetPoolChips()
         {
             InitPoolChips();
-            foreach (var player in Players)
-            {
-                foreach (var bet in player.BetChips)
-                {
-                    var poolChip = PoolChips.FirstOrDefault(it => it.Money == bet.Money);
-                    if (poolChip != null)
-                        poolChip.Num += bet.Num;
-                }
-            }
+            PoolMoney = Players.Sum(it => it.BetMoney);
             Next();
 
         }
@@ -237,7 +222,7 @@ namespace TexasHoldem.Web.Services
                 foreach (var player in currentPlayers)
                 {
                     player.IsCheck = false;
-                    pokers.Add(new FinalPoker(player.Poker1, player.Poker2, RiverPokers, player.Id));
+                    pokers.Add(new FinalPoker(player.Poker1, player.Poker2, RiverPokers, player.Name));
                 }
 
                 FinalCompute(pokers);
@@ -260,7 +245,8 @@ namespace TexasHoldem.Web.Services
         private void FinalCompute(List<FinalPoker> pokers)
         {
             this.IsFinished = true;
-            var result = PokerService.Instance.Summary(pokers).GroupBy(it => it.Result);
+            this.FinalPokers.AddRange(PokerService.Instance.Summary(pokers));
+            var result = this.FinalPokers.GroupBy(it => it.Result);
 
             var totalMoney = this.PoolMoney;
             foreach (var item in result)
@@ -271,14 +257,14 @@ namespace TexasHoldem.Web.Services
                 foreach (var fp in item)
                 {
                     var winMoney = GetChipMoney(totalMoney / count);
-                    var player = Players.FirstOrDefault(it => it.Id == fp.PlayerId);
+                    var player = Players.FirstOrDefault(it => it.Name == fp.PlayerName);
                     player.IsWinner = true;
                     if (player.IsAllIn)
                     {
                         if (player.BetMoney <= winMoney)
                         {
-                            AllInPlayerWinMoney(player);
                             totalMoney -= player.Money;
+                            AllInPlayerWinMoney(player);
                         }
                         else
                         {
@@ -295,33 +281,16 @@ namespace TexasHoldem.Web.Services
             }
 
             PlayersUpdated?.Invoke(this.Players[_currentIndex]);
-            GameUpdated?.Invoke(this);
         }
 
         private void AllInPlayerWinMoney(Player player)
         {
-            foreach (var chip in player.BetChips)
-            {
-                chip.Num = chip.Num * 2;
-            }
+            player.Money = player.Money * 2;
         }
 
         private void PlayerWinMoney(Player player, int money)
         {
-            var chip500 = player.Chips.FirstOrDefault(it => it.Money == 500);
-            chip500.Num += (int)Math.Floor((double)money / 500);
-            money = money % 500;
-            var chip100 = player.Chips.FirstOrDefault(it => it.Money == 100);
-            chip100.Num += (int)Math.Floor((double)money / 100);
-            money = money % 100;
-            var chip50 = player.Chips.FirstOrDefault(it => it.Money == 50);
-            chip50.Num += (int)Math.Floor((double)money / 50);
-            money = money % 50;
-            var chip25 = player.Chips.FirstOrDefault(it => it.Money == 25);
-            chip25.Num += (int)Math.Floor((double)money / 25);
-            money = money % 25;
-            var chip5 = player.Chips.FirstOrDefault(it => it.Money == 5);
-            chip5.Num += (int)Math.Floor((double)money / 5);
+            player.Money += money;
         }
 
         /// <summary>

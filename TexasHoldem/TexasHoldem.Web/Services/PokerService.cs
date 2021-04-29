@@ -54,7 +54,14 @@ namespace TexasHoldem.Web.Services
             foreach (var item in finalPokers)
             {
                 var weight = Compute(item);
-                var result = float.Parse(weight);
+                float result = 0;
+                try
+                {
+                    result = float.Parse(weight);
+                }
+                catch
+                {
+                }
                 item.Result = result;
             }
             return finalPokers.OrderByDescending(it => it.Result);
@@ -84,7 +91,7 @@ namespace TexasHoldem.Web.Services
                             another = singleCards[index - 1];
                         else
                             another = singleCards.Last();
-                        return "8." + another.Value;
+                        return "8." + single.Value + another.Value;
                     }
 
                     //三带二
@@ -93,7 +100,7 @@ namespace TexasHoldem.Web.Services
                     {
                         SingleCard another = singleCards.LastOrDefault(it => it.Count >= 2 && it.PokerSize != single.PokerSize);
                         if (another != null)
-                            return "7." + another.Value;
+                            return "7." + single.Value + another.Value;
                     }
 
                 }
@@ -145,7 +152,7 @@ namespace TexasHoldem.Web.Services
                     {
                         var index = JudgeStraight(singleCards.ToList());
                         if (index > 0)
-                            return "5." + index;
+                            return "5." + singleCards[index + 1].Value;
                     }
 
                     //三条
@@ -155,7 +162,7 @@ namespace TexasHoldem.Web.Services
 
                         var another = singleCards.LastOrDefault(it => it.PokerSize != single.PokerSize);
                         var another2 = singleCards.LastOrDefault(it => it.PokerSize != single.PokerSize && it.PokerSize != another.PokerSize);
-                        return "4." + another.Value + another2.Value;
+                        return "4." + single.Value + another.Value + another2.Value;
                     }
 
                     //两对
@@ -177,7 +184,7 @@ namespace TexasHoldem.Web.Services
                     }
                     //高牌
 
-                    return "1." + singleCards[6].Value + singleCards[5].Value + singleCards[4].Value + singleCards[3].Value + singleCards[2].Value + singleCards[1].PokerSize + singleCards[0].Value;
+                    return "1." + singleCards[6].Value + singleCards[5].Value + singleCards[4].Value + singleCards[3].Value + singleCards[2].Value + singleCards[1].Value + singleCards[0].Value;
                 }
             }
             catch
@@ -187,8 +194,9 @@ namespace TexasHoldem.Web.Services
             return "0";
         }
 
-        private int JudgeStraight(List<SingleCard> pokers)
+        private int JudgeStraight(List<SingleCard> realpokers)
         {
+            var pokers = realpokers.ToList();
             var count = 0;
             bool hasAce = false;
             if (pokers.Last().PokerSize == PokerSize.Max)
