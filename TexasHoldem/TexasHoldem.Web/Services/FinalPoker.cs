@@ -34,7 +34,7 @@ namespace TexasHoldem.Web.Services
                 else if (Result > 2)
                     return PokerStyle.一对.ToString();
                 else if (Result > 1)
-                    return PokerStyle.一对.ToString();
+                    return PokerStyle.高牌.ToString();
                 else
                     return PokerStyle.What.ToString();
             }

@@ -240,8 +240,8 @@
                     </div>
                 </div>
                 <div class="headercolumn">
-                    <gamer :seat="playerSeats[6]" :game="game" :self="self" :index="6"></gamer>
                     <gamer :seat="playerSeats[7]" :game="game" :self="self" :index="7"></gamer>
+                    <gamer :seat="playerSeats[6]" :game="game" :self="self" :index="6"></gamer>
                 </div>
             </div>
             <div class="hearderRow2">
@@ -278,15 +278,14 @@
                         </div>
                         <div class="riches">
                             <span>0</span>
-                            <input class="fullwidth" type="range" :disabled="!self.isActive" v-model="self.betMoney" min="0" :max="self.money" step="5" />
+                            <input class="fullwidth" type="range" :disabled="!self.isActive" v-model.number="self.betMoney" min="0" :max="self.money" step="5" />
                             <span>{{self.money}}</span>
                         </div>
                         <div class="riches">
-                            <label v-on:click="remove(5)">-</label> <img class="chip" src="~/img/chip5.png" v-on:click="add(5)" /> <label v-on:click="add(5)">+</label>
-                            <label v-on:click="remove(25)">-</label> <img class="chip" src="~/img/chip25.png" v-on:click="add(25)" /><label v-on:click="add(25)">+</label>
-                            <label v-on:click="remove(50)">-</label> <img class="chip" src="~/img/chip50.png" v-on:click="add(50)" /><label v-on:click="add(50)">+</label>
-                            <label v-on:click="remove(100)">-</label> <img class="chip" src="~/img/chip100.png" v-on:click="add(100)" /><label v-on:click="add(100)">+</label>
-                            <label v-on:click="remove(500)">-</label> <img class="chip" src="~/img/chip500.png" v-on:click="add(500)" /><label v-on:click="add(500)">+</label>
+                            <label v-on:click="remove(5)"><big>-</big></label> <img class="chip" src="~/img/chip5.png" v-on:click="add(5)" /> <label v-on:click="add(5)" style="margin-right:10px"><big>+</big></label>
+                            <label v-on:click="remove(50)"><big>-</big></label> <img class="chip" src="~/img/chip50.png" v-on:click="add(50)" /><label v-on:click="add(50)" style="margin-right:10px"><big>+</big></label>
+                            <label v-on:click="remove(100)"><big>-</big></label> <img class="chip" src="~/img/chip100.png" v-on:click="add(100)" /><label v-on:click="add(100)" style="margin-right:10px"><big>+</big></label>
+                            <label v-on:click="remove(500)"><big>-</big></label> <img class="chip" src="~/img/chip500.png" v-on:click="add(500)" /><label v-on:click="add(500)" style="margin-right:10px"><big>+</big></label>
                         </div>
 
                         <div>

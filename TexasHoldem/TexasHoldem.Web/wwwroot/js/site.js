@@ -149,7 +149,7 @@ Vue.component('gamer', {
     methods: {
         selectSeat: function (index) {
             if (this.game) {
-                if (this.game.gameStatus > 0) {
+                if (this.game.gameStatus > 0 && this.game.gameStatus < 3) {
                     alert("游戏中不能换位置!");
                     return;
                 }
@@ -358,7 +358,7 @@ var app = new Vue({
         remove: function (bet) {
             if (!this.self.isActive)
                 return;
-            if (this.self.money >=bet)
+            if (this.self.money >= bet)
                 this.self.betMoney -= bet;
         },
 
