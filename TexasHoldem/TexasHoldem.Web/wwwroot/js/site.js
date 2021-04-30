@@ -192,7 +192,8 @@ var app = new Vue({
         game: {},
         notification: "请选择座位!",
         preBet: 0,
-        showResult: false
+        showResult: false,
+        requested: false
     },
     computed: {
         playerSeats: function () {
@@ -275,6 +276,8 @@ var app = new Vue({
                         return item.name === that.self.name;
                     });
 
+                    this.requested = false;
+
                 })
             }
         });
@@ -293,6 +296,8 @@ var app = new Vue({
                     that.self = that.players.find(function (item, index) {
                         return item.name === that.self.name;
                     });
+                    this.requested = false;
+
                 })
             }
         });
@@ -302,6 +307,9 @@ var app = new Vue({
                 that.$nextTick(() => {
                     that.game = game;
                     that.notification = "Game" + that.game.id + "  " + that.game.gameStatus;
+
+                    this.requested = false;
+
                     if (that.game.isFinished)
                         that.showResult = true;
                 })
@@ -313,15 +321,11 @@ var app = new Vue({
         startGame: function () {
             connection.invoke('StartGame');
         },
-        chipToggle: function (data) {
-            if (data.isAdd)
-                this.betChips.push(data.chip);
-            else {
-                var index = this.betChips.indexOf(data.chip);
-                this.betChips.splice(index, 1);
-            }
-        },
         bet: function () {
+           
+            //if (this.requested)
+            //    return;
+
             var money = this.self.betMoney;
 
             if (this.self.role == 2) {
@@ -346,8 +350,9 @@ var app = new Vue({
             }
 
             this.preBet = money;
-
+            this.self.isActive = false;
             connection.invoke('Bet', money);
+            this.requested = true;
         },
         add: function (bet) {
             if (!this.self.isActive)
@@ -358,11 +363,16 @@ var app = new Vue({
         remove: function (bet) {
             if (!this.self.isActive)
                 return;
-            if (this.self.money >= bet)
+            if (this.self.betMoney >= bet)
                 this.self.betMoney -= bet;
+
         },
 
         check: function () {
+           
+            //if (this.requested)
+            //    return;
+
             var money = this.self.betMoney;
 
             if (money < this.game.maxBet) {
@@ -381,10 +391,15 @@ var app = new Vue({
                 alert("您已经押注，不能Check!");
                 return;
             }
-
+            this.self.isActive = false;
             connection.invoke('Check');
+            this.requested = true;
         },
         fold: function () {
+           
+            //if (this.requested)
+            //    return;
+
             if (this.self.role == 3 || this.self.role == 2) {
                 var money = this.preBet;
 
@@ -393,7 +408,9 @@ var app = new Vue({
                     return;
                 }
             }
+            this.self.isActive = false;
             connection.invoke('Fold');
+            this.requested = true;
         }
 
     }
