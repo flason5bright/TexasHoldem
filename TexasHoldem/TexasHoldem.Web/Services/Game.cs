@@ -119,7 +119,6 @@ namespace TexasHoldem.Web.Services
 
         protected void Start()
         {
-            GameStatus = GameStatus.Started;
             _smallIndex = this.Players.IndexOf(this.Players.FirstOrDefault(it => it.Role == GameRole.Small));
             _currentIndex = _smallIndex;
             this.Players[_currentIndex].IsActive = true;
@@ -226,6 +225,7 @@ namespace TexasHoldem.Web.Services
                 }
 
                 FinalCompute(pokers);
+                GameStatus = GameStatus.Finished;
                 return;
             }
 

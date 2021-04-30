@@ -281,7 +281,7 @@
                             <input class="fullwidth" type="range" :disabled="!self.isActive" v-model.number="self.betMoney" min="0" :max="self.money" step="5" />
                             <span>{{self.money}}</span>
                         </div>
-                        <div class="riches">
+                        <div class="riches" style="font-size:20px">
                             <label v-on:click="remove(5)"><big>-</big></label> <img class="chip" src="~/img/chip5.png" v-on:click="add(5)" /> <label v-on:click="add(5)" style="margin-right:10px"><big>+</big></label>
                             <label v-on:click="remove(50)"><big>-</big></label> <img class="chip" src="~/img/chip50.png" v-on:click="add(50)" /><label v-on:click="add(50)" style="margin-right:10px"><big>+</big></label>
                             <label v-on:click="remove(100)"><big>-</big></label> <img class="chip" src="~/img/chip100.png" v-on:click="add(100)" /><label v-on:click="add(100)" style="margin-right:10px"><big>+</big></label>
@@ -290,7 +290,7 @@
 
                         <div>
                             <span>0</span>
-                            <progress :value="self.money" max="5000" class="fullwidth"></progress>
+                            <progress :value="self.money-self.betMoney" max="5000" class="fullwidth"></progress>
                             <span>{{self.money}}</span>
                         </div>
                         @*<div class="riches" v-if="self.isActive">

@@ -322,7 +322,7 @@ var app = new Vue({
             connection.invoke('StartGame');
         },
         bet: function () {
-           
+
             //if (this.requested)
             //    return;
 
@@ -340,13 +340,14 @@ var app = new Vue({
                     return;
                 }
             }
-            if (money < this.game.maxBet) {
+            if (money < this.game.maxBet && this.self.money > money) {
                 alert("你的下注不能少于之前玩家!");
                 return;
             }
 
             if (money == this.preBet) {
                 this.check();
+                return;
             }
 
             this.preBet = money;
@@ -369,7 +370,7 @@ var app = new Vue({
         },
 
         check: function () {
-           
+
             //if (this.requested)
             //    return;
 
@@ -396,7 +397,7 @@ var app = new Vue({
             this.requested = true;
         },
         fold: function () {
-           
+
             //if (this.requested)
             //    return;
 
